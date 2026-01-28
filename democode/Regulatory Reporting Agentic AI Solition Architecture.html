@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Regulatory Reporting - Architecture</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .workflow {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .step {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        .step-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+        .step-content {
+            margin-left: 55px;
+            color: #555;
+        }
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .tech-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+        .tech-item h3 {
+            margin: 0 0 10px 0;
+            color: #667eea;
+            font-size: 16px;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .framework {
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .crewai {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+        .langgraph {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border: 2px solid #4CAF50;
+        }
+        .framework h2 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+        }
+        .winner-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .pros-cons {
+            margin-top: 15px;
+        }
+        .pros-cons h4 {
+            margin: 10px 0 5px 0;
+        }
+        .pros-cons ul {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .pros {
+            color: #2e7d32;
+        }
+        .cons {
+            color: #c62828;
+        }
+        .tech-options {
+            margin-top: 15px;
+            background: #fff;
+            border-radius: 6px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+        }
+        .tech-option {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+            background: #fafafa;
+        }
+        .tech-option:last-child {
+            margin-bottom: 0;
+        }
+        .tech-option h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tech-option-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: normal;
+        }
+        .badge-recommended {
+            background: #4CAF50;
+            color: white;
+        }
+        .badge-alternative {
+            background: #2196F3;
+            color: white;
+        }
+        .badge-legacy {
+            background: #9e9e9e;
+            color: white;
+        }
+        .tech-option p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+        }
+        .tech-option .tools {
+            font-size: 13px;
+            color: #667eea;
+            margin: 8px 0;
+        }
+        .mini-pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        .mini-pros-cons ul {
+            margin: 5px 0;
+            padding-left: 18px;
+        }
+        .mini-pros-cons li {
+            margin-bottom: 3px;
+        }
+        .arrow {
+            text-align: center;
+            font-size: 30px;
+            color: #667eea;
+            margin: 10px 0;
+        }
+        .metrics {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .metric {
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .metric-label {
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏦  Bank Regulatory Reporting Automation</h1>
+        <div class="subtitle">AI-Powered MAS Notice 610 Capital Adequacy Report Generation</div>
+        
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-value">95%</div>
+                <div class="metric-label">Time Reduction</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">&lt;1%</div>
+                <div class="metric-label">Error Rate</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">$100K</div>
+                <div class="metric-label">Annual Savings</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">100%</div>
+                <div class="metric-label">Audit Trail</div>
+            </div>
+        </div>
+
+        <h2 style="margin-top: 40px;">📋 Complete Workflow</h2>
+        <div class="workflow">
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">📋 Requirements Analysis</div>
+                </div>
+                <div class="step-content">
+                    <strong>Input:</strong> MAS Notice 610 regulatory requirements<br>
+                    <strong>Process:</strong> Parse report structure, identify required fields, map to data sources<br>
+                    <strong>Output:</strong> Field-to-source mappings for all report sections
+
+                    <div class="tech-options">
+                        <h4 style="margin-top:0; color:#667eea;">Technology Options for Field Identification:</h4>
+
+                        <div class="tech-option">
+                            <h4>🏷️ Named Entity Recognition (NER) <span class="tech-option-badge badge-recommended">RECOMMENDED</span></h4>
+                            <p>Uses ML models trained to identify and classify entities in regulatory text (field names, data types, thresholds, calculations, references).</p>
+                            <p class="tools"><strong>Tools:</strong> spaCy (custom NER), Hugging Face Transformers (BERT/RoBERTa fine-tuned), AWS Comprehend, Google Cloud NLP</p>
+
+                            <div style="background: #e8f5e9; padding: 10px; border-radius: 4px; margin: 10px 0; font-size: 13px;">
+                                <strong>Traditional NER vs Contextual NER:</strong><br>
+                                <em>Traditional (CRF/rule-based):</em> Pattern-matching, requires exact formats, poor generalization<br>
+                                <em>Contextual (BERT/RoBERTa):</em> Understands semantic context, infers entity types from surrounding text, handles novel formats
+                            </div>
+
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>High precision for structured extraction</li>
+                                        <li>Fast inference (ms for traditional, ~100ms for BERT)</li>
+                                        <li>Works offline, no API costs</li>
+                                        <li>Consistent, deterministic results</li>
+                                        <li>Custom entity types for finance domain</li>
+                                        <li><strong>Contextual models:</strong> Infer entities from context (e.g., "the regulator" → MAS)</li>
+                                        <li><strong>Contextual models:</strong> Better zero-shot generalization to new formats</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>Requires labeled training data (~500+ examples)</li>
+                                        <li><em>Traditional only:</em> Struggles with novel field formats</li>
+                                        <li><em>Traditional only:</em> Cannot infer implicit relationships</li>
+                                        <li>Contextual models need GPU for efficient inference</li>
+                                        <li>Fine-tuning still needed for domain-specific entities</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tech-option">
+                            <h4>🤖 Large Language Models (LLM) <span class="tech-option-badge badge-alternative">FLEXIBLE</span></h4>
+                            <p>Uses foundation models with prompting/few-shot learning to extract fields, understand context, and infer data mappings from natural language requirements.</p>
+                            <p class="tools"><strong>Tools:</strong> GPT-4/GPT-4o, Claude 3, Gemini Pro, Llama 3 (self-hosted)</p>
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>Zero-shot capability - no training needed</li>
+                                        <li>Understands complex context and nuance</li>
+                                        <li>Can infer implicit requirements</li>
+                                        <li>Handles varied document formats</li>
+                                        <li>Explains reasoning for mappings</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>Higher latency (1-10 seconds)</li>
+                                        <li>API costs ($0.01-0.10 per document)</li>
+                                        <li>Non-deterministic outputs</li>
+                                        <li>May hallucinate field names</li>
+                                        <li>Requires output validation</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tech-option">
+                            <h4>📐 Rule-Based / Regex Pattern Matching <span class="tech-option-badge badge-legacy">TRADITIONAL</span></h4>
+                            <p>Uses handcrafted regular expressions and parsing rules to extract fields based on known document structure and formatting conventions.</p>
+                            <p class="tools"><strong>Tools:</strong> Python re module, pyparsing, ANTLR, custom parsers</p>
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>100% deterministic and explainable</li>
+                                        <li>Extremely fast execution</li>
+                                        <li>No external dependencies</li>
+                                        <li>Easy to audit and validate</li>
+                                        <li>Zero operational costs</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>Brittle to format changes</li>
+                                        <li>High maintenance burden</li>
+                                        <li>Cannot handle ambiguity</li>
+                                        <li>Requires deep domain expertise</li>
+                                        <li>Poor generalization to new docs</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">💾 SQL Query Generation</div>
+                </div>
+                <div class="step-content">
+                    <strong>Input:</strong> Field mappings, Oracle GL schema<br>
+                    <strong>Process:</strong> Generate SQL queries using pattern matching and schema awareness<br>
+                    <strong>Output:</strong> Validated SQL queries for each field
+
+                    <div class="tech-options">
+                        <h4 style="margin-top:0; color:#667eea;">Technology Options for Text-to-SQL:</h4>
+
+                        <div class="tech-option">
+                            <h4>🧠 LLM with RAG (Retrieval-Augmented Generation) <span class="tech-option-badge badge-recommended">RECOMMENDED</span></h4>
+                            <p>Combines LLMs with schema retrieval - embeds schema metadata, retrieves relevant tables/columns, and generates contextually-aware SQL with examples.</p>
+                            <p class="tools"><strong>Tools:</strong> LangChain SQL Agent, LlamaIndex, Vanna.ai, GPT-4 + pgvector/Pinecone for schema embeddings</p>
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>Handles large schemas (1000+ tables)</li>
+                                        <li>Learns from query history</li>
+                                        <li>Adapts to schema changes automatically</li>
+                                        <li>Provides natural language explanations</li>
+                                        <li>High accuracy with few-shot examples</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>Requires vector DB infrastructure</li>
+                                        <li>Higher latency (2-5 seconds)</li>
+                                        <li>Complex prompt engineering needed</li>
+                                        <li>May generate syntactically incorrect SQL</li>
+                                        <li>Needs SQL validation layer</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tech-option">
+                            <h4>🎯 Specialized Text-to-SQL Models <span class="tech-option-badge badge-alternative">HIGH ACCURACY</span></h4>
+                            <p>Purpose-built models fine-tuned specifically for SQL generation tasks, trained on Spider/WikiSQL benchmarks with schema encoding.</p>
+                            <p class="tools"><strong>Tools:</strong> SQLCoder (Defog), DIN-SQL, RESDSQL, NumbersStation/NSText2SQL, Codex fine-tuned</p>
+
+                            <div style="background: #e8f5e9; padding: 12px; border-radius: 4px; margin: 10px 0; font-size: 13px;">
+                                <strong>How Schema is Provided to Models:</strong><br><br>
+
+                                <em style="color: #1565c0;">1. Schema Serialization (in prompt):</em><br>
+                                <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-size: 12px;">
+                                CREATE TABLE gl_accounts (account_id INT PK, account_name VARCHAR, balance DECIMAL);<br>
+                                CREATE TABLE transactions (txn_id INT PK, account_id INT FK, amount DECIMAL);
+                                </code><br><br>
+
+                                <em style="color: #1565c0;">2. Schema Linking (two-stage):</em><br>
+                                Stage 1: Identify relevant tables/columns from question → ["gl_accounts", "balance"]<br>
+                                Stage 2: Include only filtered schema in prompt (reduces 1000 tables → 5-10)<br><br>
+
+                                <em style="color: #1565c0;">3. Schema Encoding Methods:</em><br>
+                                <table style="width: 100%; font-size: 12px; margin-top: 5px;">
+                                    <tr><td><strong>DDL format</strong></td><td>CREATE TABLE statements - most common, models trained on this</td></tr>
+                                    <tr><td><strong>Pipe format</strong></td><td>table_name(col1, col2, col3*) - compact, * marks PK</td></tr>
+                                    <tr><td><strong>JSON schema</strong></td><td>{"table": "accounts", "columns": [...]} - structured</td></tr>
+                                    <tr><td><strong>Graph encoding</strong></td><td>Encode FK relationships as edges - for GNN-based models</td></tr>
+                                </table>
+                            </div>
+
+                            <div style="background: #fff3e0; padding: 10px; border-radius: 4px; margin: 10px 0; font-size: 13px;">
+                                <strong>Handling Large Schemas (1000+ tables):</strong><br>
+                                <ul style="margin: 5px 0; padding-left: 20px;">
+                                    <li><strong>Embedding-based retrieval:</strong> Embed table/column descriptions, retrieve top-k relevant</li>
+                                    <li><strong>Question-to-schema matching:</strong> Use NER to extract entities, match to table names</li>
+                                    <li><strong>Hierarchical selection:</strong> First select schema (database), then tables, then columns</li>
+                                    <li><strong>Schema summarization:</strong> Generate natural language descriptions of tables</li>
+                                </ul>
+                            </div>
+
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>State-of-the-art SQL accuracy (85%+)</li>
+                                        <li>Optimized for SQL syntax</li>
+                                        <li>Can run locally (7B-15B params)</li>
+                                        <li>Lower cost than general LLMs</li>
+                                        <li>Better complex JOIN handling</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>Less flexible for edge cases</li>
+                                        <li>Requires GPU for inference</li>
+                                        <li>Limited to SQL generation only</li>
+                                        <li>May need fine-tuning for Oracle dialect</li>
+                                        <li>Smaller context windows (4K-8K typical)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tech-option">
+                            <h4>📝 Template-Based with Slot Filling <span class="tech-option-badge badge-legacy">DETERMINISTIC</span></h4>
+                            <p>Pre-defined SQL templates for common report patterns with parameterized slots filled by mapping rules. Uses semantic matching to select templates.</p>
+                            <p class="tools"><strong>Tools:</strong> Jinja2 SQL templates, Custom DSL, Apache Calcite, dbt macros</p>
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>100% predictable output</li>
+                                        <li>Easy to audit and certify</li>
+                                        <li>No ML infrastructure needed</li>
+                                        <li>Guaranteed valid SQL syntax</li>
+                                        <li>Version-controlled templates</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>Limited to pre-defined patterns</li>
+                                        <li>High maintenance for new fields</li>
+                                        <li>Cannot handle novel queries</li>
+                                        <li>Template explosion for variations</li>
+                                        <li>Requires ongoing template updates</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tech-option">
+                            <h4>🔧 Fine-Tuned Domain-Specific Models <span class="tech-option-badge badge-alternative">HIGHEST ACCURACY</span></h4>
+                            <p>Base LLMs or Text-to-SQL models fine-tuned on organization-specific query patterns, schema conventions, and historical SQL queries for maximum accuracy.</p>
+                            <p class="tools"><strong>Tools:</strong> OpenAI Fine-tuning API, LoRA/QLoRA adapters, Hugging Face PEFT, Modal/Anyscale for training, Weights & Biases for tracking</p>
+
+                            <div style="background: #fff3e0; padding: 10px; border-radius: 4px; margin: 10px 0; font-size: 13px;">
+                                <strong>Fine-tuning Approaches:</strong><br>
+                                <em>Full fine-tuning:</em> Update all weights - best accuracy, expensive ($1000s GPU hours)<br>
+                                <em>LoRA/QLoRA:</em> Train adapter layers only - 90% of accuracy at 10% cost<br>
+                                <em>Prompt tuning:</em> Learn soft prompts - fastest, least accurate
+                            </div>
+
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>Learns org-specific naming conventions</li>
+                                        <li>Captures tribal knowledge in queries</li>
+                                        <li>90%+ accuracy on known patterns</li>
+                                        <li>Handles Oracle/DB2 dialect nuances</li>
+                                        <li>Can encode business rules in model</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>Requires 1000+ query examples</li>
+                                        <li>Expensive GPU training ($500-5000)</li>
+                                        <li>Risk of overfitting to training data</li>
+                                        <li>Needs retraining for schema changes</li>
+                                        <li>Model versioning complexity</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tech-option">
+                            <h4>🕸️ Knowledge Graph + Semantic Layer <span class="tech-option-badge badge-alternative">EXPLAINABLE</span></h4>
+                            <p>Encodes schema relationships, business glossary, and data lineage in a knowledge graph. Translates NL to graph queries, then to SQL with full explainability.</p>
+                            <p class="tools"><strong>Tools:</strong> Neo4j + Cypher, Amazon Neptune, Stardog, dbt Semantic Layer, Atlan, Alation, cube.dev</p>
+
+                            <div style="background: #e3f2fd; padding: 10px; border-radius: 4px; margin: 10px 0; font-size: 13px;">
+                                <strong>Knowledge Graph Components:</strong><br>
+                                <em>Schema graph:</em> Tables, columns, relationships, foreign keys<br>
+                                <em>Business glossary:</em> "Revenue" → SUM(GL_AMOUNT) WHERE ACCOUNT_TYPE='REV'<br>
+                                <em>Lineage graph:</em> Source systems → transformations → report fields
+                            </div>
+
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>Full explainability - trace query logic</li>
+                                        <li>Encodes business semantics explicitly</li>
+                                        <li>Handles synonyms (Revenue/Income/Sales)</li>
+                                        <li>Supports complex relationship traversal</li>
+                                        <li>Single source of truth for definitions</li>
+                                        <li>Governance and lineage built-in</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>High upfront effort to build graph</li>
+                                        <li>Requires ongoing graph maintenance</li>
+                                        <li>Graph query complexity for edge cases</li>
+                                        <li>Additional infrastructure (graph DB)</li>
+                                        <li>May need LLM for NL→graph translation</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">📥 Data Extraction</div>
+                </div>
+                <div class="step-content">
+                    <strong>Input:</strong> SQL queries<br>
+                    <strong>Process:</strong> Execute queries against Oracle GL, handle aggregations<br>
+                    <strong>Output:</strong> Extracted financial data organized by field
+
+                    <div class="tech-options">
+                        <h4 style="margin-top:0; color:#667eea;">Technology Options for Data Extraction:</h4>
+
+                        <div class="tech-option">
+                            <h4>⚡ Direct Database Connectors with Connection Pooling <span class="tech-option-badge badge-recommended">RECOMMENDED</span></h4>
+                            <p>Native database drivers with connection pooling, async execution, and ORM abstraction for efficient, typed data access.</p>
+                            <p class="tools"><strong>Tools:</strong> SQLAlchemy + cx_Oracle, asyncpg, databases (async), HikariCP (Java), Prisma</p>
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>Lowest latency - direct connection</li>
+                                        <li>Full SQL feature support</li>
+                                        <li>Connection pooling for efficiency</li>
+                                        <li>Type safety with ORM models</li>
+                                        <li>Transaction management built-in</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>Requires network access to DB</li>
+                                        <li>Connection management complexity</li>
+                                        <li>Driver version compatibility issues</li>
+                                        <li>No built-in caching layer</li>
+                                        <li>Scaling requires read replicas</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tech-option">
+                            <h4>🔄 ETL Pipeline Frameworks <span class="tech-option-badge badge-alternative">ENTERPRISE SCALE</span></h4>
+                            <p>Orchestrated data pipelines with scheduling, monitoring, lineage tracking, and built-in retry/recovery mechanisms.</p>
+                            <p class="tools"><strong>Tools:</strong> Apache Airflow, Prefect, Dagster, dbt + Fivetran, AWS Glue, Azure Data Factory</p>
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>Built-in scheduling and monitoring</li>
+                                        <li>Automatic retry and recovery</li>
+                                        <li>Data lineage tracking</li>
+                                        <li>Parallelization across sources</li>
+                                        <li>Enterprise governance features</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>Higher infrastructure overhead</li>
+                                        <li>Overkill for single-report use case</li>
+                                        <li>Steeper learning curve</li>
+                                        <li>Added latency for orchestration</li>
+                                        <li>Requires dedicated ops support</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tech-option">
+                            <h4>🌐 Data Virtualization Layer <span class="tech-option-badge badge-alternative">UNIFIED ACCESS</span></h4>
+                            <p>Abstraction layer that presents multiple data sources as a single virtual database, with query federation and caching.</p>
+                            <p class="tools"><strong>Tools:</strong> Denodo, Dremio, Trino/Presto, Apache Drill, Starburst</p>
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>Single interface for all sources</li>
+                                        <li>No data movement/replication</li>
+                                        <li>Built-in query optimization</li>
+                                        <li>Cross-source JOINs possible</li>
+                                        <li>Centralized security policies</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>Additional infrastructure layer</li>
+                                        <li>License costs (enterprise tools)</li>
+                                        <li>Performance depends on sources</li>
+                                        <li>Complex query translation issues</li>
+                                        <li>Single point of failure risk</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div class="step-title">📝 Report Population</div>
+                </div>
+                <div class="step-content">
+                    <strong>Input:</strong> Extracted data, report template<br>
+                    <strong>Process:</strong> Fill fields, perform calculations (e.g., capital ratios)<br>
+                    <strong>Output:</strong> Fully populated regulatory report
+
+                    <div class="tech-options">
+                        <h4 style="margin-top:0; color:#667eea;">Technology Options for Report Generation:</h4>
+
+                        <div class="tech-option">
+                            <h4>📄 Template Engine + Document Libraries <span class="tech-option-badge badge-recommended">RECOMMENDED</span></h4>
+                            <p>Combines template engines for logic/loops with document libraries for native Excel/PDF output. Separates data logic from presentation.</p>
+                            <p class="tools"><strong>Tools:</strong> Jinja2 + openpyxl/XlsxWriter, python-docx, ReportLab (PDF), WeasyPrint, Carbone</p>
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>Full control over output format</li>
+                                        <li>Native Excel formulas preserved</li>
+                                        <li>Complex calculations in Python</li>
+                                        <li>Template version control</li>
+                                        <li>No external service dependencies</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>Manual template maintenance</li>
+                                        <li>Complex formatting code</li>
+                                        <li>Limited chart/graph support</li>
+                                        <li>Testing templates is tedious</li>
+                                        <li>PDF rendering inconsistencies</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tech-option">
+                            <h4>📊 Business Intelligence / Reporting Platforms <span class="tech-option-badge badge-alternative">ENTERPRISE</span></h4>
+                            <p>Full-featured BI platforms with drag-and-drop report builders, scheduled generation, and built-in distribution capabilities.</p>
+                            <p class="tools"><strong>Tools:</strong> Power BI Embedded, Tableau Server, Looker, SSRS, JasperReports, BIRT</p>
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>Visual report designer (no-code)</li>
+                                        <li>Built-in scheduling & distribution</li>
+                                        <li>Interactive dashboards included</li>
+                                        <li>Enterprise security integration</li>
+                                        <li>Audit logging built-in</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>High license costs</li>
+                                        <li>Less flexibility for custom formats</li>
+                                        <li>Vendor lock-in concerns</li>
+                                        <li>Complex deployment requirements</li>
+                                        <li>May not match exact MAS format</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tech-option">
+                            <h4>🔢 Spreadsheet Automation / RPA <span class="tech-option-badge badge-legacy">FAMILIAR</span></h4>
+                            <p>Automates existing Excel-based workflows using macro automation, preserving familiar interfaces while adding programmatic control.</p>
+                            <p class="tools"><strong>Tools:</strong> xlwings, pyautogui, UiPath, Blue Prism, Power Automate, VBA macros</p>
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>Works with existing Excel templates</li>
+                                        <li>Preserves complex Excel formulas</li>
+                                        <li>Familiar to finance teams</li>
+                                        <li>Low learning curve</li>
+                                        <li>Quick implementation</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>Brittle - breaks on UI changes</li>
+                                        <li>Slower execution (GUI-based)</li>
+                                        <li>Difficult to scale</li>
+                                        <li>Poor error handling</li>
+                                        <li>Version compatibility issues</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <div class="step-title">✅ Data Validation</div>
+                </div>
+                <div class="step-content">
+                    <strong>Input:</strong> Populated report, source GL data<br>
+                    <strong>Process:</strong> Cross-validate, check thresholds, reconcile differences<br>
+                    <strong>Output:</strong> Validation results with pass/fail status<br>
+                    <strong>Checks:</strong> Completeness, Accuracy, Consistency, Timeliness
+
+                    <div class="tech-options">
+                        <h4 style="margin-top:0; color:#667eea;">Technology Options for Data Validation:</h4>
+
+                        <div class="tech-option">
+                            <h4>📋 Data Quality Frameworks <span class="tech-option-badge badge-recommended">RECOMMENDED</span></h4>
+                            <p>Declarative data validation frameworks with expectation-based testing, profiling, and documentation generation for data contracts.</p>
+                            <p class="tools"><strong>Tools:</strong> Great Expectations, Pandera, Pydantic, Cerberus, dbt tests, Soda Core</p>
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>Declarative validation rules</li>
+                                        <li>Auto-generates documentation</li>
+                                        <li>Data profiling included</li>
+                                        <li>Version-controlled expectations</li>
+                                        <li>Rich failure diagnostics</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>Learning curve for DSL</li>
+                                        <li>Can be verbose for simple checks</li>
+                                        <li>Requires rule maintenance</li>
+                                        <li>Limited cross-dataset validation</li>
+                                        <li>May miss business context</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tech-option">
+                            <h4>📈 Statistical Anomaly Detection <span class="tech-option-badge badge-alternative">INTELLIGENT</span></h4>
+                            <p>ML-based detection of outliers and anomalies by learning historical patterns, identifying deviations that rule-based systems miss.</p>
+                            <p class="tools"><strong>Tools:</strong> PyOD, scikit-learn (Isolation Forest, LOF), Amazon Lookout, Monte Carlo, Anomalo</p>
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>Catches unknown-unknown errors</li>
+                                        <li>Adapts to data drift</li>
+                                        <li>No explicit rule definition</li>
+                                        <li>Learns seasonal patterns</li>
+                                        <li>Quantifies confidence levels</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>Requires historical data</li>
+                                        <li>False positives need tuning</li>
+                                        <li>Black-box explanations</li>
+                                        <li>May miss regulatory-specific rules</li>
+                                        <li>Needs retraining over time</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tech-option">
+                            <h4>⚖️ Business Rule Engines <span class="tech-option-badge badge-legacy">AUDITABLE</span></h4>
+                            <p>Formal rule engines executing business logic in a declarative, auditable way with full traceability for regulatory compliance.</p>
+                            <p class="tools"><strong>Tools:</strong> Drools, Easy Rules, Python Rule Engine, AWS Rules Engine, Clara Rules</p>
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>Complete audit trail</li>
+                                        <li>Business-readable rules</li>
+                                        <li>Deterministic execution</li>
+                                        <li>Complex rule chaining</li>
+                                        <li>Regulatory-friendly documentation</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>Steep learning curve</li>
+                                        <li>Rule maintenance overhead</li>
+                                        <li>Can become complex quickly</li>
+                                        <li>Performance concerns at scale</li>
+                                        <li>Requires business analyst expertise</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">6</div>
+                    <div class="step-title">🏛️ Compliance Review</div>
+                </div>
+                <div class="step-content">
+                    <strong>Input:</strong> Validated report, validation results<br>
+                    <strong>Process:</strong> Final compliance check, approval decision<br>
+                    <strong>Output:</strong> Approved/rejected report with audit trail<br>
+                    <strong>Decision:</strong> Based on validation status and regulatory thresholds
+
+                    <div class="tech-options">
+                        <h4 style="margin-top:0; color:#667eea;">Technology Options for Workflow & Approval:</h4>
+
+                        <div class="tech-option">
+                            <h4>🔄 Workflow Orchestration Engines <span class="tech-option-badge badge-recommended">RECOMMENDED</span></h4>
+                            <p>State-machine based orchestration with approval gates, parallel reviews, escalation paths, and SLA management.</p>
+                            <p class="tools"><strong>Tools:</strong> Apache Airflow, Prefect, Temporal, Camunda, AWS Step Functions, Azure Logic Apps</p>
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>Visual workflow design</li>
+                                        <li>Built-in retry and recovery</li>
+                                        <li>Approval gates and timeouts</li>
+                                        <li>Full execution history</li>
+                                        <li>Scalable parallel processing</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>Infrastructure complexity</li>
+                                        <li>Overkill for simple workflows</li>
+                                        <li>Requires DevOps expertise</li>
+                                        <li>Debugging distributed state</li>
+                                        <li>Vendor-specific DSLs</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tech-option">
+                            <h4>👥 Human-in-the-Loop (HITL) Platforms <span class="tech-option-badge badge-alternative">HYBRID</span></h4>
+                            <p>Combines automated processing with human review interfaces, task queues, annotation tools, and exception handling workflows.</p>
+                            <p class="tools"><strong>Tools:</strong> Retool, Superblocks, AWS A2I (Augmented AI), Scale AI, Labelbox, custom review UIs</p>
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>Human oversight for edge cases</li>
+                                        <li>Builds training data for ML</li>
+                                        <li>Flexible exception handling</li>
+                                        <li>Audit trail of human decisions</li>
+                                        <li>Gradual automation increase</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>Slower than full automation</li>
+                                        <li>Requires staffed review team</li>
+                                        <li>UI/UX development needed</li>
+                                        <li>Human error still possible</li>
+                                        <li>Scaling bottlenecks</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tech-option">
+                            <h4>📜 GRC (Governance, Risk, Compliance) Platforms <span class="tech-option-badge badge-alternative">ENTERPRISE</span></h4>
+                            <p>Comprehensive regulatory compliance platforms with policy management, control testing, evidence collection, and regulatory reporting.</p>
+                            <p class="tools"><strong>Tools:</strong> ServiceNow GRC, MetricStream, RSA Archer, OneTrust, Workiva, IBM OpenPages</p>
+                            <div class="mini-pros-cons">
+                                <div>
+                                    <strong class="pros">Pros:</strong>
+                                    <ul class="pros">
+                                        <li>End-to-end compliance management</li>
+                                        <li>Built-in regulatory frameworks</li>
+                                        <li>Automated evidence collection</li>
+                                        <li>Executive dashboards/reporting</li>
+                                        <li>Integrated risk assessment</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="cons">Cons:</strong>
+                                    <ul class="cons">
+                                        <li>Very high license costs</li>
+                                        <li>Long implementation cycles</li>
+                                        <li>Heavy customization needed</li>
+                                        <li>May not fit specific MAS needs</li>
+                                        <li>Organizational change required</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 style="margin-top: 50px;">🤖 Framework Comparison</h2>
+        <div class="comparison">
+            <div class="framework crewai">
+                <h2>CrewAI</h2>
+                <p><strong>Multi-Agent Collaboration</strong></p>
+                <div class="pros-cons">
+                    <h4 class="pros">✅ Strengths:</h4>
+                    <ul class="pros">
+                        <li>Fast prototyping</li>
+                        <li>Natural agent delegation</li>
+                        <li>Good for complex reasoning</li>
+                        <li>Intuitive for beginners</li>
+                    </ul>
+                    <h4 class="cons">❌ Limitations:</h4>
+                    <ul class="cons">
+                        <li>Less predictable execution</li>
+                        <li>Harder to debug</li>
+                        <li>Higher LLM costs</li>
+                        <li>Weaker audit trails</li>
+                    </ul>
+                </div>
+                <p><strong>Best For:</strong> Ad-hoc analysis, research projects, prototyping</p>
+            </div>
+
+            <div class="framework langgraph">
+                <h2>
+                    LangGraph
+                    <span class="winner-badge">RECOMMENDED</span>
+                </h2>
+                <p><strong>Graph-Based State Management</strong></p>
+                <div class="pros-cons">
+                    <h4 class="pros">✅ Strengths:</h4>
+                    <ul class="pros">
+                        <li>Deterministic execution</li>
+                        <li>Complete audit trails</li>
+                        <li>Easy debugging</li>
+                        <li>Lower LLM costs</li>
+                        <li>Better testing</li>
+                        <li>Production-ready</li>
+                    </ul>
+                    <h4 class="cons">❌ Limitations:</h4>
+                    <ul class="cons">
+                        <li>Steeper learning curve</li>
+                        <li>More upfront structure</li>
+                    </ul>
+                </div>
+                <p><strong>Best For:</strong> Production systems, regulatory compliance, high-volume processing</p>
+            </div>
+        </div>
+
+        <h2 style="margin-top: 50px;">🤖 Agentic AI Architecture</h2>
+        <p style="color: #555; margin-bottom: 25px;">This system implements a multi-agent architecture using agentic design patterns. Below is a deep dive into the core concepts powering the automation.</p>
+
+        <!-- Agents Section -->
+        <div style="background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%); padding: 25px; border-radius: 10px; margin-bottom: 25px;">
+            <h3 style="margin-top: 0; color: #3f51b5;">🎭 Agents</h3>
+            <p><strong>Definition:</strong> Autonomous AI entities that perceive their environment, make decisions, and take actions to achieve specific goals.</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #3f51b5;">
+                    <h4 style="margin: 0 0 10px 0; color: #3f51b5;">📋 Requirements Analyst Agent</h4>
+                    <p style="margin: 0; font-size: 13px;"><strong>Role:</strong> Parse MAS Notice 610, identify fields, map to data sources</p>
+                    <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;"><strong>Capabilities:</strong> Document parsing, NER, schema matching</p>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                    <h4 style="margin: 0 0 10px 0; color: #4caf50;">💾 SQL Generator Agent</h4>
+                    <p style="margin: 0; font-size: 13px;"><strong>Role:</strong> Generate and validate SQL queries for data extraction</p>
+                    <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;"><strong>Capabilities:</strong> Text-to-SQL, schema awareness, query optimization</p>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #ff9800;">
+                    <h4 style="margin: 0 0 10px 0; color: #ff9800;">📊 Data Extractor Agent</h4>
+                    <p style="margin: 0; font-size: 13px;"><strong>Role:</strong> Execute queries, aggregate results, handle errors</p>
+                    <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;"><strong>Capabilities:</strong> DB connections, data transformation, retry logic</p>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="margin: 0 0 10px 0; color: #9c27b0;">✅ Validator Agent</h4>
+                    <p style="margin: 0; font-size: 13px;"><strong>Role:</strong> Cross-validate data, check thresholds, flag anomalies</p>
+                    <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;"><strong>Capabilities:</strong> Rule execution, anomaly detection, reconciliation</p>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #e91e63;">
+                    <h4 style="margin: 0 0 10px 0; color: #e91e63;">📝 Report Generator Agent</h4>
+                    <p style="margin: 0; font-size: 13px;"><strong>Role:</strong> Populate templates, calculate ratios, format output</p>
+                    <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;"><strong>Capabilities:</strong> Template rendering, calculations, Excel/PDF generation</p>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #00bcd4;">
+                    <h4 style="margin: 0 0 10px 0; color: #00bcd4;">🏛️ Compliance Reviewer Agent</h4>
+                    <p style="margin: 0; font-size: 13px;"><strong>Role:</strong> Final review, approval decision, audit trail</p>
+                    <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;"><strong>Capabilities:</strong> Policy checking, decision making, documentation</p>
+                </div>
+            </div>
+
+            <div style="background: #fff; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                <h4 style="margin: 0 0 10px 0;">Agent Anatomy</h4>
+                <pre style="background: #263238; color: #aed581; padding: 15px; border-radius: 5px; font-size: 12px; overflow-x: auto; margin: 0;">
+class Agent:
+    name: str                    # Unique identifier
+    role: str                    # Responsibility description
+    goal: str                    # What success looks like
+    backstory: str               # Context for personality/expertise
+    tools: List[Tool]            # Available capabilities
+    llm: LLM                     # Language model for reasoning
+    memory: Memory               # Short/long-term context
+
+    def perceive(env) -> State   # Observe environment
+    def reason(state) -> Action  # Decide next action
+    def act(action) -> Result    # Execute action
+    def reflect(result) -> None  # Learn from outcome</pre>
+            </div>
+        </div>
+
+        <!-- States Section -->
+        <div style="background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%); padding: 25px; border-radius: 10px; margin-bottom: 25px;">
+            <h3 style="margin-top: 0; color: #00838f;">📊 States & State Management</h3>
+            <p><strong>Definition:</strong> A snapshot of all information at a given point in the workflow, enabling deterministic execution and debugging.</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px;">
+                    <h4 style="margin: 0 0 10px 0; color: #00838f;">LangGraph State Model</h4>
+                    <pre style="background: #263238; color: #80deea; padding: 12px; border-radius: 5px; font-size: 11px; overflow-x: auto; margin: 0;">
+class ReportState(TypedDict):
+    # Input state
+    requirements: str
+    report_period: str
+
+    # Processing state
+    field_mappings: List[FieldMapping]
+    sql_queries: List[SQLQuery]
+    extracted_data: Dict[str, Any]
+
+    # Validation state
+    validation_results: List[ValidationResult]
+    errors: List[str]
+    warnings: List[str]
+
+    # Output state
+    report_data: Dict[str, Any]
+    status: Literal["pending", "processing",
+                    "validated", "approved", "failed"]
+
+    # Metadata
+    audit_trail: List[AuditEntry]
+    current_node: str</pre>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px;">
+                    <h4 style="margin: 0 0 10px 0; color: #00838f;">State Transitions</h4>
+                    <div style="font-size: 13px;">
+                        <div style="padding: 8px; background: #e0f7fa; border-radius: 4px; margin-bottom: 8px;">
+                            <strong>INIT</strong> → Requirements loaded, period set
+                        </div>
+                        <div style="padding: 8px; background: #b2ebf2; border-radius: 4px; margin-bottom: 8px;">
+                            <strong>ANALYZING</strong> → Parsing requirements, identifying fields
+                        </div>
+                        <div style="padding: 8px; background: #80deea; border-radius: 4px; margin-bottom: 8px;">
+                            <strong>GENERATING</strong> → Creating SQL queries
+                        </div>
+                        <div style="padding: 8px; background: #4dd0e1; border-radius: 4px; margin-bottom: 8px;">
+                            <strong>EXTRACTING</strong> → Running queries, collecting data
+                        </div>
+                        <div style="padding: 8px; background: #26c6da; border-radius: 4px; margin-bottom: 8px;">
+                            <strong>VALIDATING</strong> → Cross-checking, threshold verification
+                        </div>
+                        <div style="padding: 8px; background: #00bcd4; border-radius: 4px; margin-bottom: 8px;">
+                            <strong>POPULATING</strong> → Filling report template
+                        </div>
+                        <div style="padding: 8px; background: #00acc1; border-radius: 4px; margin-bottom: 8px;">
+                            <strong>REVIEWING</strong> → Compliance check, approval
+                        </div>
+                        <div style="padding: 8px; background: #0097a7; border-radius: 4px; color: white;">
+                            <strong>COMPLETE</strong> → Report finalized with audit trail
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #fff3e0; padding: 12px; border-radius: 6px; margin-top: 15px; font-size: 13px;">
+                <strong>Why State Matters:</strong> Enables checkpointing (resume from failure), time-travel debugging (replay any step), audit trails (trace every decision), and parallel execution (safe state isolation).
+            </div>
+        </div>
+
+        <!-- Memory Section -->
+        <div style="background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%); padding: 25px; border-radius: 10px; margin-bottom: 25px;">
+            <h3 style="margin-top: 0; color: #c2185b;">🧠 Memory Architecture</h3>
+            <p><strong>Definition:</strong> Mechanisms for agents to retain and recall information across interactions, enabling context-aware decision making.</p>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px;">
+                    <h4 style="margin: 0 0 10px 0; color: #c2185b;">🔄 Short-Term Memory</h4>
+                    <p style="font-size: 13px; margin: 0 0 10px 0;">Current conversation context, recent tool outputs, working variables</p>
+                    <ul style="margin: 0; padding-left: 18px; font-size: 12px; color: #666;">
+                        <li>Conversation buffer</li>
+                        <li>Token window (last N tokens)</li>
+                        <li>Scratchpad for reasoning</li>
+                        <li>Ephemeral - cleared per session</li>
+                    </ul>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px;">
+                    <h4 style="margin: 0 0 10px 0; color: #c2185b;">📚 Long-Term Memory</h4>
+                    <p style="font-size: 13px; margin: 0 0 10px 0;">Persisted knowledge, learned patterns, historical data</p>
+                    <ul style="margin: 0; padding-left: 18px; font-size: 12px; color: #666;">
+                        <li>Vector store (embeddings)</li>
+                        <li>Knowledge base / RAG</li>
+                        <li>Historical query patterns</li>
+                        <li>Persists across sessions</li>
+                    </ul>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px;">
+                    <h4 style="margin: 0 0 10px 0; color: #c2185b;">🔗 Semantic Memory</h4>
+                    <p style="font-size: 13px; margin: 0 0 10px 0;">Facts, relationships, domain knowledge</p>
+                    <ul style="margin: 0; padding-left: 18px; font-size: 12px; color: #666;">
+                        <li>Schema relationships</li>
+                        <li>Business glossary</li>
+                        <li>Regulatory rules</li>
+                        <li>Entity relationships</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                <h4 style="margin: 0 0 10px 0;">Memory Implementation</h4>
+                <pre style="background: #263238; color: #f48fb1; padding: 12px; border-radius: 5px; font-size: 11px; overflow-x: auto; margin: 0;">
+# LangGraph memory via state persistence
+checkpointer = SqliteSaver.from_conn_string("memory.db")
+graph = workflow.compile(checkpointer=checkpointer)
+
+# CrewAI memory configuration
+crew = Crew(
+    agents=[...],
+    memory=True,                    # Enable memory
+    embedder={
+        "provider": "openai",
+        "config": {"model": "text-embedding-3-small"}
+    },
+    long_term_memory=LongTermMemory(
+        storage=LTMSQLiteStorage(db_path="long_term.db")
+    ),
+    short_term_memory=ShortTermMemory(
+        storage=RAGStorage(type="short_term")
+    ),
+    entity_memory=EntityMemory(     # Track entities across tasks
+        storage=RAGStorage(type="entities")
+    )
+)</pre>
+            </div>
+        </div>
+
+        <!-- Agentic Design Patterns Section -->
+        <div style="background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); padding: 25px; border-radius: 10px; margin-bottom: 25px;">
+            <h3 style="margin-top: 0; color: #ff8f00;">🏗️ Agentic Design Patterns Applied</h3>
+            <p><strong>Definition:</strong> Proven architectural patterns for building reliable, scalable AI agent systems.</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-top: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-top: 4px solid #ff8f00;">
+                    <h4 style="margin: 0 0 8px 0;">1. ReAct (Reason + Act)</h4>
+                    <p style="font-size: 13px; margin: 0 0 8px 0;">Interleaves reasoning traces with actions for transparent decision-making.</p>
+                    <pre style="background: #f5f5f5; padding: 8px; border-radius: 4px; font-size: 11px; margin: 0;">
+Thought: Need capital adequacy data
+Action: query_gl_database
+Observation: Got balance data
+Thought: Now calculate CAR ratio
+Action: calculate_ratio
+Result: CAR = 14.2%</pre>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px; border-top: 4px solid #4caf50;">
+                    <h4 style="margin: 0 0 8px 0;">2. Chain of Thought (CoT)</h4>
+                    <p style="font-size: 13px; margin: 0 0 8px 0;">Breaks complex reasoning into explicit intermediate steps.</p>
+                    <pre style="background: #f5f5f5; padding: 8px; border-radius: 4px; font-size: 11px; margin: 0;">
+Step 1: Identify Tier 1 capital components
+Step 2: Sum CET1 + AT1 capital
+Step 3: Calculate risk-weighted assets
+Step 4: Tier1 Capital / RWA = CAR
+Step 5: Compare against 10.5% threshold</pre>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px; border-top: 4px solid #2196f3;">
+                    <h4 style="margin: 0 0 8px 0;">3. Self-Ask</h4>
+                    <p style="font-size: 13px; margin: 0 0 8px 0;">Agent asks and answers sub-questions to decompose complex queries.</p>
+                    <pre style="background: #f5f5f5; padding: 8px; border-radius: 4px; font-size: 11px; margin: 0;">
+Q: What is 's capital adequacy?
+Sub-Q1: What is Tier 1 capital? → $45B
+Sub-Q2: What are RWAs? → $320B
+Sub-Q3: What is the formula? → T1/RWA
+Answer: 45/320 = 14.06%</pre>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px; border-top: 4px solid #9c27b0;">
+                    <h4 style="margin: 0 0 8px 0;">4. Plan and Execute</h4>
+                    <p style="font-size: 13px; margin: 0 0 8px 0;">Separates planning from execution for complex multi-step tasks.</p>
+                    <pre style="background: #f5f5f5; padding: 8px; border-radius: 4px; font-size: 11px; margin: 0;">
+PLAN:
+1. Parse MAS 610 requirements
+2. Map fields to GL accounts
+3. Generate SQL queries
+4. Extract data
+5. Validate results
+EXECUTE: [Run each step sequentially]</pre>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px; border-top: 4px solid #e91e63;">
+                    <h4 style="margin: 0 0 8px 0;">5. Supervisor Pattern</h4>
+                    <p style="font-size: 13px; margin: 0 0 8px 0;">Orchestrator agent delegates to specialized worker agents.</p>
+                    <pre style="background: #f5f5f5; padding: 8px; border-radius: 4px; font-size: 11px; margin: 0;">
+Supervisor: "Need capital report"
+ → Delegate to: RequirementsAgent
+ → Delegate to: SQLAgent
+ → Delegate to: ValidationAgent
+ → Aggregate results
+ → Return final report</pre>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px; border-top: 4px solid #00bcd4;">
+                    <h4 style="margin: 0 0 8px 0;">6. Hierarchical Agents</h4>
+                    <p style="font-size: 13px; margin: 0 0 8px 0;">Multi-level agent hierarchy for complex organizational structures.</p>
+                    <pre style="background: #f5f5f5; padding: 8px; border-radius: 4px; font-size: 11px; margin: 0;">
+L1: Compliance Director (strategy)
+ └─ L2: Report Manager (coordination)
+     ├─ L3: Data Team (extraction)
+     ├─ L3: Validation Team (QA)
+     └─ L3: Filing Team (submission)</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reflection Section -->
+        <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 25px; border-radius: 10px; margin-bottom: 25px;">
+            <h3 style="margin-top: 0; color: #2e7d32;">🪞 Reflection Pattern</h3>
+            <p><strong>Definition:</strong> Agent's ability to evaluate its own outputs, identify errors, and iteratively improve responses.</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px;">
+                    <h4 style="margin: 0 0 10px 0; color: #2e7d32;">Self-Reflection Loop</h4>
+                    <div style="text-align: center; padding: 10px;">
+                        <div style="display: inline-block; padding: 10px 20px; background: #a5d6a7; border-radius: 20px; margin: 5px;">Generate</div>
+                        <div style="display: inline-block; padding: 5px;">→</div>
+                        <div style="display: inline-block; padding: 10px 20px; background: #81c784; border-radius: 20px; margin: 5px;">Critique</div>
+                        <div style="display: inline-block; padding: 5px;">→</div>
+                        <div style="display: inline-block; padding: 10px 20px; background: #66bb6a; border-radius: 20px; margin: 5px;">Refine</div>
+                        <div style="display: inline-block; padding: 5px;">→</div>
+                        <div style="display: inline-block; padding: 10px 20px; background: #4caf50; border-radius: 20px; margin: 5px; color: white;">Validate</div>
+                    </div>
+                    <pre style="background: #263238; color: #a5d6a7; padding: 12px; border-radius: 5px; font-size: 11px; overflow-x: auto; margin-top: 10px;">
+def reflect_on_sql(query: str, error: str) -> str:
+    critique = llm.invoke(f"""
+    SQL Query: {query}
+    Error: {error}
+
+    Analyze what went wrong:
+    1. Syntax issues?
+    2. Wrong table/column names?
+    3. Missing JOINs?
+    4. Incorrect aggregations?
+
+    Provide corrected query.
+    """)
+    return critique.corrected_query</pre>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px;">
+                    <h4 style="margin: 0 0 10px 0; color: #2e7d32;">Reflection in This System</h4>
+                    <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
+                        <tr style="background: #e8f5e9;">
+                            <td style="padding: 8px; border: 1px solid #c8e6c9;"><strong>Component</strong></td>
+                            <td style="padding: 8px; border: 1px solid #c8e6c9;"><strong>Reflection Applied</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #c8e6c9;">SQL Generation</td>
+                            <td style="padding: 8px; border: 1px solid #c8e6c9;">Validate syntax → Check execution → Verify results → Refine if needed</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #c8e6c9;">Data Validation</td>
+                            <td style="padding: 8px; border: 1px solid #c8e6c9;">Run checks → Identify failures → Root cause analysis → Suggest fixes</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #c8e6c9;">Report Population</td>
+                            <td style="padding: 8px; border: 1px solid #c8e6c9;">Fill fields → Cross-verify totals → Flag mismatches → Auto-correct</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #c8e6c9;">Compliance Review</td>
+                            <td style="padding: 8px; border: 1px solid #c8e6c9;">Check against rules → Identify gaps → Request clarification → Approve/reject</td>
+                        </tr>
+                    </table>
+                    <div style="background: #e8f5e9; padding: 10px; border-radius: 4px; margin-top: 10px; font-size: 12px;">
+                        <strong>Reflexion Pattern:</strong> Store failed attempts in memory, use them to avoid repeating mistakes in future runs.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tool Use Section -->
+        <div style="background: linear-gradient(135deg, #ede7f6 0%, #d1c4e9 100%); padding: 25px; border-radius: 10px; margin-bottom: 25px;">
+            <h3 style="margin-top: 0; color: #5e35b1;">🔧 Tool Use</h3>
+            <p><strong>Definition:</strong> Agents' ability to invoke external functions, APIs, and services to extend their capabilities beyond text generation.</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 30px; margin-bottom: 10px;">🗄️</div>
+                    <h4 style="margin: 0 0 5px 0; font-size: 14px;">Database Tools</h4>
+                    <p style="font-size: 12px; color: #666; margin: 0;">execute_sql, get_schema, validate_query</p>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 30px; margin-bottom: 10px;">📄</div>
+                    <h4 style="margin: 0 0 5px 0; font-size: 14px;">Document Tools</h4>
+                    <p style="font-size: 12px; color: #666; margin: 0;">parse_pdf, extract_tables, read_excel</p>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 30px; margin-bottom: 10px;">🧮</div>
+                    <h4 style="margin: 0 0 5px 0; font-size: 14px;">Calculation Tools</h4>
+                    <p style="font-size: 12px; color: #666; margin: 0;">calculate_ratio, aggregate_data, apply_formula</p>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 30px; margin-bottom: 10px;">✅</div>
+                    <h4 style="margin: 0 0 5px 0; font-size: 14px;">Validation Tools</h4>
+                    <p style="font-size: 12px; color: #666; margin: 0;">check_threshold, cross_validate, flag_anomaly</p>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 30px; margin-bottom: 10px;">📊</div>
+                    <h4 style="margin: 0 0 5px 0; font-size: 14px;">Report Tools</h4>
+                    <p style="font-size: 12px; color: #666; margin: 0;">generate_excel, create_pdf, fill_template</p>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 30px; margin-bottom: 10px;">🔍</div>
+                    <h4 style="margin: 0 0 5px 0; font-size: 14px;">Search Tools</h4>
+                    <p style="font-size: 12px; color: #666; margin: 0;">semantic_search, lookup_glossary, find_similar</p>
+                </div>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                <h4 style="margin: 0 0 10px 0;">Tool Definition Pattern</h4>
+                <pre style="background: #263238; color: #b39ddb; padding: 12px; border-radius: 5px; font-size: 11px; overflow-x: auto; margin: 0;">
+@tool
+def execute_sql_query(query: str, database: str = "oracle_gl") -> Dict[str, Any]:
+    """Execute a SQL query against the specified database.
+
+    Args:
+        query: The SQL query to execute (SELECT only)
+        database: Target database connection name
+
+    Returns:
+        Dict with 'data' (results), 'columns' (names), 'row_count', 'execution_time'
+    """
+    # Validate query is read-only
+    if not query.strip().upper().startswith("SELECT"):
+        raise ValueError("Only SELECT queries allowed")
+
+    # Execute with connection pooling
+    with get_connection(database) as conn:
+        result = conn.execute(text(query))
+        return {
+            "data": result.fetchall(),
+            "columns": result.keys(),
+            "row_count": result.rowcount,
+            "execution_time": result.execution_time
+        }
+
+# Bind tools to agent
+sql_agent = Agent(
+    role="SQL Expert",
+    tools=[execute_sql_query, get_table_schema, validate_sql_syntax]
+)</pre>
+            </div>
+        </div>
+
+        <!-- Planning Section -->
+        <div style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); padding: 25px; border-radius: 10px; margin-bottom: 25px;">
+            <h3 style="margin-top: 0; color: #e65100;">📋 Planning</h3>
+            <p><strong>Definition:</strong> Agent's ability to decompose goals into actionable steps, anticipate dependencies, and create execution strategies.</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px;">
+                    <h4 style="margin: 0 0 10px 0; color: #e65100;">Planning Strategies</h4>
+                    <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
+                        <tr style="background: #fff3e0;">
+                            <td style="padding: 8px; border: 1px solid #ffe0b2;"><strong>Strategy</strong></td>
+                            <td style="padding: 8px; border: 1px solid #ffe0b2;"><strong>Use Case</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #ffe0b2;"><strong>Task Decomposition</strong></td>
+                            <td style="padding: 8px; border: 1px solid #ffe0b2;">Break "generate report" into atomic subtasks</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #ffe0b2;"><strong>Dependency Analysis</strong></td>
+                            <td style="padding: 8px; border: 1px solid #ffe0b2;">Identify which tasks must complete before others</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #ffe0b2;"><strong>Resource Allocation</strong></td>
+                            <td style="padding: 8px; border: 1px solid #ffe0b2;">Assign agents/tools to specific tasks</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #ffe0b2;"><strong>Contingency Planning</strong></td>
+                            <td style="padding: 8px; border: 1px solid #ffe0b2;">Define fallback actions for failures</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #ffe0b2;"><strong>Parallel Execution</strong></td>
+                            <td style="padding: 8px; border: 1px solid #ffe0b2;">Identify independent tasks for concurrent processing</td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px;">
+                    <h4 style="margin: 0 0 10px 0; color: #e65100;">Example: Report Generation Plan</h4>
+                    <pre style="background: #263238; color: #ffcc80; padding: 12px; border-radius: 5px; font-size: 11px; overflow-x: auto; margin: 0;">
+GOAL: Generate MAS 610 Capital Adequacy Report
+
+PLAN:
+├── Phase 1: Requirements (Sequential)
+│   └── Task 1.1: Parse MAS 610 document
+│   └── Task 1.2: Extract field definitions
+│   └── Task 1.3: Map to data sources
+│
+├── Phase 2: Data Collection (Parallel)
+│   ├── Task 2.1: Query Tier 1 capital ─┐
+│   ├── Task 2.2: Query Tier 2 capital ─┼→ Parallel
+│   └── Task 2.3: Query RWA data ───────┘
+│
+├── Phase 3: Processing (Sequential)
+│   └── Task 3.1: Calculate CAR ratio
+│   └── Task 3.2: Calculate LCR ratio
+│
+├── Phase 4: Validation (Sequential)
+│   └── Task 4.1: Cross-validate totals
+│   └── Task 4.2: Check thresholds
+│
+└── Phase 5: Output (Sequential)
+    └── Task 5.1: Populate template
+    └── Task 5.2: Generate audit trail</pre>
+                </div>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                <h4 style="margin: 0 0 10px 0;">LangGraph Planning Implementation</h4>
+                <pre style="background: #263238; color: #ffcc80; padding: 12px; border-radius: 5px; font-size: 11px; overflow-x: auto; margin: 0;">
+# Define workflow graph with conditional edges
+workflow = StateGraph(ReportState)
+
+# Add nodes (tasks)
+workflow.add_node("analyze_requirements", analyze_requirements)
+workflow.add_node("generate_sql", generate_sql)
+workflow.add_node("extract_data", extract_data)
+workflow.add_node("validate_data", validate_data)
+workflow.add_node("populate_report", populate_report)
+workflow.add_node("compliance_review", compliance_review)
+
+# Define execution plan via edges
+workflow.add_edge(START, "analyze_requirements")
+workflow.add_edge("analyze_requirements", "generate_sql")
+workflow.add_edge("generate_sql", "extract_data")
+workflow.add_edge("extract_data", "validate_data")
+
+# Conditional branching based on validation results
+workflow.add_conditional_edges(
+    "validate_data",
+    lambda state: "populate" if state["validation_passed"] else "fix_errors",
+    {"populate": "populate_report", "fix_errors": "generate_sql"}  # Retry loop
+)
+
+workflow.add_edge("populate_report", "compliance_review")
+workflow.add_edge("compliance_review", END)</pre>
+            </div>
+        </div>
+
+        <!-- A2A Section -->
+        <div style="background: linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 100%); padding: 25px; border-radius: 10px; margin-bottom: 25px;">
+            <h3 style="margin-top: 0; color: #0277bd;">🔗 Agent-to-Agent (A2A) Communication</h3>
+            <p><strong>Definition:</strong> Protocols and patterns for agents to exchange information, delegate tasks, and collaborate on complex goals.</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px;">
+                    <h4 style="margin: 0 0 10px 0; color: #0277bd;">Communication Patterns</h4>
+                    <div style="margin-bottom: 15px;">
+                        <div style="background: #e1f5fe; padding: 10px; border-radius: 4px; margin-bottom: 8px;">
+                            <strong>1. Message Passing</strong>
+                            <p style="font-size: 12px; margin: 5px 0 0 0;">Direct messages between agents via shared state or message queue</p>
+                        </div>
+                        <div style="background: #b3e5fc; padding: 10px; border-radius: 4px; margin-bottom: 8px;">
+                            <strong>2. Delegation</strong>
+                            <p style="font-size: 12px; margin: 5px 0 0 0;">Supervisor assigns tasks to worker agents with specific instructions</p>
+                        </div>
+                        <div style="background: #81d4fa; padding: 10px; border-radius: 4px; margin-bottom: 8px;">
+                            <strong>3. Broadcast</strong>
+                            <p style="font-size: 12px; margin: 5px 0 0 0;">One agent publishes updates to all listening agents</p>
+                        </div>
+                        <div style="background: #4fc3f7; padding: 10px; border-radius: 4px; color: #333;">
+                            <strong>4. Negotiation</strong>
+                            <p style="font-size: 12px; margin: 5px 0 0 0;">Agents discuss and reach consensus on approach</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px;">
+                    <h4 style="margin: 0 0 10px 0; color: #0277bd;">A2A Flow in This System</h4>
+                    <div style="font-size: 12px; line-height: 1.8;">
+                        <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                            <span style="background: #3f51b5; color: white; padding: 2px 8px; border-radius: 10px; margin-right: 8px;">Requirements</span>
+                            <span>→ "Here are the field mappings"</span>
+                            <span style="background: #4caf50; color: white; padding: 2px 8px; border-radius: 10px; margin-left: 8px;">SQL Gen</span>
+                        </div>
+                        <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                            <span style="background: #4caf50; color: white; padding: 2px 8px; border-radius: 10px; margin-right: 8px;">SQL Gen</span>
+                            <span>→ "Execute these queries"</span>
+                            <span style="background: #ff9800; color: white; padding: 2px 8px; border-radius: 10px; margin-left: 8px;">Extractor</span>
+                        </div>
+                        <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                            <span style="background: #ff9800; color: white; padding: 2px 8px; border-radius: 10px; margin-right: 8px;">Extractor</span>
+                            <span>→ "Validate this data"</span>
+                            <span style="background: #9c27b0; color: white; padding: 2px 8px; border-radius: 10px; margin-left: 8px;">Validator</span>
+                        </div>
+                        <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                            <span style="background: #9c27b0; color: white; padding: 2px 8px; border-radius: 10px; margin-right: 8px;">Validator</span>
+                            <span>→ "Errors found, retry"</span>
+                            <span style="background: #4caf50; color: white; padding: 2px 8px; border-radius: 10px; margin-left: 8px;">SQL Gen</span>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <span style="background: #9c27b0; color: white; padding: 2px 8px; border-radius: 10px; margin-right: 8px;">Validator</span>
+                            <span>→ "Data validated, proceed"</span>
+                            <span style="background: #e91e63; color: white; padding: 2px 8px; border-radius: 10px; margin-left: 8px;">Reporter</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px;">
+                    <h4 style="margin: 0 0 10px 0; color: #0277bd;">CrewAI A2A Example</h4>
+                    <pre style="background: #263238; color: #81d4fa; padding: 12px; border-radius: 5px; font-size: 11px; overflow-x: auto; margin: 0;">
+# Agents can delegate to each other
+requirements_agent = Agent(
+    role="Requirements Analyst",
+    goal="Parse regulatory requirements",
+    allow_delegation=True  # Can delegate to other agents
+)
+
+sql_agent = Agent(
+    role="SQL Expert",
+    goal="Generate accurate queries"
+)
+
+# Task with automatic delegation
+task = Task(
+    description="Generate capital report",
+    agent=requirements_agent,  # Starts here
+    # CrewAI auto-delegates to sql_agent when needed
+)
+
+crew = Crew(
+    agents=[requirements_agent, sql_agent],
+    tasks=[task],
+    process=Process.hierarchical,  # Enable A2A
+    manager_llm=ChatOpenAI(model="gpt-4")
+)</pre>
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px;">
+                    <h4 style="margin: 0 0 10px 0; color: #0277bd;">LangGraph A2A via State</h4>
+                    <pre style="background: #263238; color: #81d4fa; padding: 12px; border-radius: 5px; font-size: 11px; overflow-x: auto; margin: 0;">
+# A2A via shared state in LangGraph
+class A2AState(TypedDict):
+    messages: Annotated[List[Message], add_messages]
+    sender: str
+    recipient: str
+    task_result: Any
+
+def sql_agent_node(state: A2AState) -> A2AState:
+    # Read message from previous agent
+    last_msg = state["messages"][-1]
+
+    # Process and respond
+    sql = generate_sql(last_msg.content)
+
+    # Send to next agent via state
+    return {
+        "messages": [AIMessage(content=sql)],
+        "sender": "sql_agent",
+        "recipient": "extractor_agent",
+        "task_result": {"query": sql}
+    }
+
+# Router decides next agent based on state
+def route_message(state: A2AState) -> str:
+    return state["recipient"]</pre>
+                </div>
+            </div>
+
+            <div style="background: #fff3e0; padding: 12px; border-radius: 6px; margin-top: 15px; font-size: 13px;">
+                <strong>Google A2A Protocol:</strong> Emerging standard for agent interoperability. Defines JSON-RPC based message format, agent discovery (Agent Cards), task lifecycle management, and streaming support. Enables agents from different vendors to communicate.
+            </div>
+        </div>
+
+        <!-- Summary Diagram -->
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; border-radius: 10px; margin-bottom: 25px; color: white;">
+            <h3 style="margin-top: 0; color: white;">🎯 Agentic Architecture Summary</h3>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 15px; text-align: center;">
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                    <div style="font-size: 24px; margin-bottom: 5px;">🎭</div>
+                    <strong>6 Agents</strong>
+                    <p style="font-size: 12px; margin: 5px 0 0 0;">Specialized roles with clear responsibilities</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                    <div style="font-size: 24px; margin-bottom: 5px;">📊</div>
+                    <strong>8 States</strong>
+                    <p style="font-size: 12px; margin: 5px 0 0 0;">Full lifecycle tracking with checkpoints</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                    <div style="font-size: 24px; margin-bottom: 5px;">🔧</div>
+                    <strong>15+ Tools</strong>
+                    <p style="font-size: 12px; margin: 5px 0 0 0;">Database, validation, reporting capabilities</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                    <div style="font-size: 24px; margin-bottom: 5px;">🔗</div>
+                    <strong>A2A Enabled</strong>
+                    <p style="font-size: 12px; margin: 5px 0 0 0;">Delegation, message passing, negotiation</p>
+                </div>
+            </div>
+            <div style="background: rgba(255,255,255,0.15); padding: 15px; border-radius: 8px; margin-top: 15px;">
+                <strong>Key Patterns Applied:</strong> ReAct, Chain of Thought, Plan-and-Execute, Supervisor, Reflection, Tool Use, Hierarchical Agents
+            </div>
+        </div>
+
+        <h2 style="margin-top: 50px;">🔧 Technology Stack (Current Implementation)</h2>
+        <div class="tech-stack">
+            <div class="tech-item">
+                <h3>🐍 Python 3.10+</h3>
+                <p><strong>Why:</strong> Type hints, async/await, rich ML ecosystem</p>
+                <p><strong>Alternatives:</strong> Java (enterprise), Go (performance), TypeScript (full-stack)</p>
+            </div>
+            <div class="tech-item">
+                <h3>🤖 Gemini 2.0 Flash</h3>
+                <p><strong>Why:</strong> Fast inference, cost-effective, strong reasoning</p>
+                <p><strong>Alternatives:</strong> GPT-4o (accuracy), Claude 3 (safety), Llama 3 (self-hosted)</p>
+            </div>
+            <div class="tech-item">
+                <h3>🔄 LangGraph</h3>
+                <p><strong>Why:</strong> Deterministic state, debuggable, production-ready</p>
+                <p><strong>Alternatives:</strong> CrewAI (prototyping), AutoGen (research), custom state machines</p>
+            </div>
+            <div class="tech-item">
+                <h3>👥 CrewAI</h3>
+                <p><strong>Why:</strong> Rapid prototyping, natural agent patterns</p>
+                <p><strong>Alternatives:</strong> LangGraph (production), AutoGen (Microsoft), Semantic Kernel</p>
+            </div>
+            <div class="tech-item">
+                <h3>📊 Pydantic</h3>
+                <p><strong>Why:</strong> Runtime validation, JSON schema, IDE support</p>
+                <p><strong>Alternatives:</strong> dataclasses + validators, attrs, marshmallow</p>
+            </div>
+            <div class="tech-item">
+                <h3>💾 Oracle GL</h3>
+                <p><strong>Why:</strong> Enterprise standard, ACID compliance, audit features</p>
+                <p><strong>Alternatives:</strong> SAP, Workday, NetSuite, custom data warehouse</p>
+            </div>
+        </div>
+
+        <h2 style="margin-top: 50px;">🎯 Technology Selection Matrix</h2>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px;">
+                <thead>
+                    <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Workflow Step</th>
+                        <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Recommended</th>
+                        <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Best For</th>
+                        <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Avoid When</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: #f8f9fa;">
+                        <td style="padding: 10px; border: 1px solid #ddd;"><strong>1. Requirements Analysis</strong></td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">NER + LLM Hybrid</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">High volume, consistent formats</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Frequently changing regulations</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd;"><strong>2. SQL Generation</strong></td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Fine-tuned model + Knowledge Graph</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">High accuracy needed, stable schema</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Rapidly changing schemas, limited training data</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td style="padding: 10px; border: 1px solid #ddd;"><strong>3. Data Extraction</strong></td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">SQLAlchemy + connection pool</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Single source, low latency</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Multi-source federation needed</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd;"><strong>4. Report Population</strong></td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Jinja2 + openpyxl</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Excel output, custom formats</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Interactive dashboards needed</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td style="padding: 10px; border: 1px solid #ddd;"><strong>5. Data Validation</strong></td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Great Expectations + Pydantic</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Declarative rules, data contracts</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">ML-based anomaly detection critical</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd;"><strong>6. Compliance Review</strong></td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">LangGraph + HITL interface</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Regulatory oversight, audit trails</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Full automation without review</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 style="margin-top: 50px;">🧠 AI/ML Technology Deep Dive</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+            <div style="padding: 20px; background: #e3f2fd; border-radius: 8px;">
+                <h3 style="margin-top: 0;">🏷️ NER Model Options</h3>
+                <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
+                    <tr style="background: #bbdefb;"><td colspan="2" style="padding: 5px;"><strong>Contextual (Recommended)</strong></td></tr>
+                    <tr><td style="padding: 5px;"><strong>BERT-NER</strong></td><td style="padding: 5px;">Contextual, infers from surrounding text</td></tr>
+                    <tr><td style="padding: 5px;"><strong>RoBERTa-NER</strong></td><td style="padding: 5px;">Better generalization, handles novel formats</td></tr>
+                    <tr><td style="padding: 5px;"><strong>FinBERT-NER</strong></td><td style="padding: 5px;">Finance domain pre-trained</td></tr>
+                    <tr style="background: #e3f2fd;"><td colspan="2" style="padding: 5px;"><strong>Traditional (Faster)</strong></td></tr>
+                    <tr><td style="padding: 5px;"><strong>spaCy</strong></td><td style="padding: 5px;">Fast CPU inference, good baseline</td></tr>
+                    <tr><td style="padding: 5px;"><strong>Flair</strong></td><td style="padding: 5px;">Stacked embeddings, finance-friendly</td></tr>
+                </table>
+                <p style="font-size: 12px; color: #666; margin-bottom: 0;"><strong>Recommendation:</strong> Contextual BERT for accuracy + context inference, spaCy for speed</p>
+            </div>
+            <div style="padding: 20px; background: #f3e5f5; border-radius: 8px;">
+                <h3 style="margin-top: 0;">🤖 LLM Provider Comparison</h3>
+                <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
+                    <tr><td style="padding: 5px;"><strong>GPT-4o</strong></td><td style="padding: 5px;">Best accuracy, $5/1M tokens input</td></tr>
+                    <tr><td style="padding: 5px;"><strong>Claude 3 Opus</strong></td><td style="padding: 5px;">Best reasoning, $15/1M tokens</td></tr>
+                    <tr><td style="padding: 5px;"><strong>Gemini 2.0</strong></td><td style="padding: 5px;">Fastest, $0.075/1M tokens</td></tr>
+                    <tr><td style="padding: 5px;"><strong>Llama 3 70B</strong></td><td style="padding: 5px;">Self-hosted, $0 API cost</td></tr>
+                </table>
+                <p style="font-size: 12px; color: #666; margin-bottom: 0;"><strong>Recommendation:</strong> Gemini for cost/speed, GPT-4 for critical accuracy</p>
+            </div>
+            <div style="padding: 20px; background: #e8f5e9; border-radius: 8px;">
+                <h3 style="margin-top: 0;">🎯 Text-to-SQL Models</h3>
+                <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
+                    <tr><td style="padding: 5px;"><strong>SQLCoder-34B</strong></td><td style="padding: 5px;">Best open-source, 84% Spider accuracy</td></tr>
+                    <tr><td style="padding: 5px;"><strong>DIN-SQL</strong></td><td style="padding: 5px;">Schema linking, 85%+ accuracy</td></tr>
+                    <tr><td style="padding: 5px;"><strong>DAIL-SQL</strong></td><td style="padding: 5px;">Few-shot learning, GPT-4 based</td></tr>
+                    <tr><td style="padding: 5px;"><strong>Vanna.ai</strong></td><td style="padding: 5px;">RAG-based, learns from examples</td></tr>
+                </table>
+                <p style="font-size: 12px; color: #666; margin-bottom: 0;"><strong>Recommendation:</strong> Vanna.ai for enterprise, SQLCoder for self-hosted</p>
+            </div>
+            <div style="padding: 20px; background: #fff3e0; border-radius: 8px;">
+                <h3 style="margin-top: 0;">📊 Vector DB for RAG</h3>
+                <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
+                    <tr><td style="padding: 5px;"><strong>Pinecone</strong></td><td style="padding: 5px;">Managed, fast, $70/mo starter</td></tr>
+                    <tr><td style="padding: 5px;"><strong>Weaviate</strong></td><td style="padding: 5px;">Open-source, hybrid search</td></tr>
+                    <tr><td style="padding: 5px;"><strong>Chroma</strong></td><td style="padding: 5px;">Simple, embedded, Python-native</td></tr>
+                    <tr><td style="padding: 5px;"><strong>pgvector</strong></td><td style="padding: 5px;">PostgreSQL extension, familiar</td></tr>
+                </table>
+                <p style="font-size: 12px; color: #666; margin-bottom: 0;"><strong>Recommendation:</strong> pgvector for existing PG, Chroma for prototyping</p>
+            </div>
+            <div style="padding: 20px; background: #fce4ec; border-radius: 8px;">
+                <h3 style="margin-top: 0;">🔧 Fine-Tuning Approaches</h3>
+                <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
+                    <tr><td style="padding: 5px;"><strong>OpenAI Fine-tune</strong></td><td style="padding: 5px;">Easiest, GPT-3.5/4, $0.008/1K tokens</td></tr>
+                    <tr><td style="padding: 5px;"><strong>LoRA/QLoRA</strong></td><td style="padding: 5px;">Efficient adapters, 4-bit quantization</td></tr>
+                    <tr><td style="padding: 5px;"><strong>Hugging Face PEFT</strong></td><td style="padding: 5px;">Open-source, multiple methods</td></tr>
+                    <tr><td style="padding: 5px;"><strong>Axolotl</strong></td><td style="padding: 5px;">Easy config-based fine-tuning</td></tr>
+                </table>
+                <p style="font-size: 12px; color: #666; margin-bottom: 0;"><strong>Recommendation:</strong> LoRA for cost-efficiency, OpenAI for simplicity</p>
+            </div>
+            <div style="padding: 20px; background: #e0f2f1; border-radius: 8px;">
+                <h3 style="margin-top: 0;">🕸️ Knowledge Graph Platforms</h3>
+                <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
+                    <tr><td style="padding: 5px;"><strong>Neo4j</strong></td><td style="padding: 5px;">Most popular, Cypher query, GraphRAG</td></tr>
+                    <tr><td style="padding: 5px;"><strong>Amazon Neptune</strong></td><td style="padding: 5px;">Managed, SPARQL/Gremlin, AWS integrated</td></tr>
+                    <tr><td style="padding: 5px;"><strong>Stardog</strong></td><td style="padding: 5px;">Enterprise KG, reasoning engine</td></tr>
+                    <tr><td style="padding: 5px;"><strong>dbt Semantic Layer</strong></td><td style="padding: 5px;">Metrics layer, SQL-native</td></tr>
+                </table>
+                <p style="font-size: 12px; color: #666; margin-bottom: 0;"><strong>Recommendation:</strong> Neo4j for flexibility, dbt for SQL-first teams</p>
+            </div>
+        </div>
+
+        <h2 style="margin-top: 50px;">📈 Key Features</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+            <div style="padding: 15px; background: #e3f2fd; border-radius: 8px;">
+                <h3>🎯 Schema-Aware SQL Generation</h3>
+                <p>Automatically generates queries based on database schema and requirements</p>
+            </div>
+            <div style="padding: 15px; background: #f3e5f5; border-radius: 8px;">
+                <h3>✅ Multi-Layer Validation</h3>
+                <p>Cross-validates data against GL, checks thresholds, ensures completeness</p>
+            </div>
+            <div style="padding: 15px; background: #e8f5e9; border-radius: 8px;">
+                <h3>📋 Complete Audit Trails</h3>
+                <p>Tracks every data transformation and decision point</p>
+            </div>
+            <div style="padding: 15px; background: #fff3e0; border-radius: 8px;">
+                <h3>🔄 Error Recovery</h3>
+                <p>Robust error handling with retry logic and graceful degradation</p>
+            </div>
+        </div>
+
+        <h2 style="margin-top: 50px;">🚀 Getting Started</h2>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #4CAF50;">
+            <h3 style="margin-top: 0;">Quick Start Commands</h3>
+            <pre style="background: #263238; color: #aed581; padding: 15px; border-radius: 5px; overflow-x: auto;">
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Set API key
+export GOOGLE_API_KEY="your-key-here"
+
+# 3. Run LangGraph demo (recommended)
+python run_langgraph_demo.py
+
+# 4. Or run CrewAI demo
+python run_crewai_demo.py
+
+# 5. Interactive menu
+python setup_and_run.py</pre>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; color: white;">
+            <h2 style="margin-top: 0; color: white;">💼 Business Impact</h2>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 15px;">
+                <div>
+                    <div style="font-size: 28px; font-weight: bold;">5-8 days → 2-4 hours</div>
+                    <div>Time per report</div>
+                </div>
+                <div>
+                    <div style="font-size: 28px; font-weight: bold;">$10K → $500</div>
+                    <div>Cost per report</div>
+                </div>
+                <div>
+                    <div style="font-size: 28px; font-weight: bold;">10% → &lt;1%</div>
+                    <div>Error rate</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #fff9c4; border-radius: 8px; border-left: 4px solid #fbc02d;">
+            <h3 style="margin-top: 0;">📚 Documentation</h3>
+            <ul style="margin: 10px 0;">
+                <li><strong>PROJECT_SUMMARY.md</strong> - Complete project overview</li>
+                <li><strong>QUICKSTART.md</strong> - Get started in 5 minutes</li>
+                <li><strong>framework_comparison.md</strong> - Detailed framework analysis</li>
+                <li><strong>sql_generation_enhancement.md</strong> - Advanced SQL generation guide</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
