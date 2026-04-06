@@ -1,6 +1,6 @@
-# Machine Learning Use-Cases in Healthcare — Citius Tech Context
+# Machine Learning Use-Cases in Healthcare — Company Tech Context
 
-Mapping supervised and unsupervised ML techniques to three core Citius Tech business domains:
+Mapping supervised and unsupervised ML techniques to three core Company Tech business domains:
 **Claims Management**, **Prior Authorization**, and **Med-Tech ISO Workflows**.
 
 ---
@@ -34,7 +34,7 @@ Claims adjudication involves thousands of daily transactions. Errors, fraud, and
 | **Key Features** | Diagnosis code (ICD-10), procedure code (CPT), payer ID, place of service, provider NPI, patient demographics, prior denial history |
 | **Algorithms** | Gradient Boosting (XGBoost), Logistic Regression for explainability |
 | **Business Value** | Fix claims before submission → reduce rework, accelerate cash flow |
-| **Citius Angle** | Train on Citius-processed claims corpus; model learns payer-specific denial patterns |
+| **Company Angle** | Train on Company-processed claims corpus; model learns payer-specific denial patterns |
 
 **Conceptual feature → outcome mapping:**
 ```
@@ -79,7 +79,7 @@ CPT within payer coverage + clean modifier  →  Low denial probability
 | **Technique** | Isolation Forest, Local Outlier Factor (LOF), Autoencoders |
 | **Signals** | Procedure mix deviation from specialty peers, unusual service duration, weekend/holiday billing spikes |
 | **Business Value** | Prioritize audits on high-risk providers without needing historical fraud labels |
-| **Citius Angle** | Especially valuable when onboarding a new payer client with no prior fraud audit history |
+| **Company Angle** | Especially valuable when onboarding a new payer client with no prior fraud audit history |
 
 ---
 
