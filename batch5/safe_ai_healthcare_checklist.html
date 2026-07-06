@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>360° Safe AI Guidelines — Healthcare Agentic AI</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f5f5f2;
+    --bg-tertiary: #efefeb;
+    --text: #1a1a18;
+    --text-secondary: #6b6b66;
+    --text-tertiary: #9b9b95;
+    --border: rgba(0,0,0,0.10);
+    --border-strong: rgba(0,0,0,0.18);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a;
+      --bg-secondary: #252522;
+      --bg-tertiary: #2e2e2b;
+      --text: #f0f0ec;
+      --text-secondary: #a0a09a;
+      --text-tertiary: #6a6a65;
+      --border: rgba(255,255,255,0.10);
+      --border-strong: rgba(255,255,255,0.18);
+    }
+    .sev-critical { background: #4a1515 !important; color: #f09595 !important; }
+    .sev-high { background: #3d2805 !important; color: #FAC775 !important; }
+    .sev-medium { background: #063322 !important; color: #5DCAA5 !important; }
+    .section-icon { filter: brightness(0.85); }
+    .stat-card { background: var(--bg-tertiary) !important; }
+    .export-btn { background: var(--text) !important; color: var(--bg) !important; border-color: var(--text) !important; }
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg-tertiary);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+    line-height: 1.6;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 2rem 2rem 1.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .hero-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 0.5rem;
+  }
+  .hero h1 {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.25;
+    margin-bottom: 0.4rem;
+  }
+  .hero-sub {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .hero-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .export-btn {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 18px;
+    border-radius: var(--radius-md);
+    border: 0.5px solid var(--text);
+    background: var(--text);
+    color: var(--bg);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .export-btn:hover { opacity: 0.85; }
+  .reset-btn {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 18px;
+    border-radius: var(--radius-md);
+    border: 0.5px solid var(--border-strong);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+  .reset-btn:hover { background: var(--bg-secondary); color: var(--text); }
+
+  /* ── Stats ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+  .stat-card {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 14px 18px;
+  }
+  .stat-label {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-tertiary);
+    margin-bottom: 6px;
+  }
+  .stat-value {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  /* ── Progress ── */
+  .progress-wrap {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 1.25rem;
+  }
+  .progress-label { font-size: 13px; color: var(--text-secondary); white-space: nowrap; }
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: var(--bg-tertiary);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--text);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+  .progress-pct { font-size: 13px; font-weight: 600; color: var(--text); min-width: 36px; text-align: right; }
+
+  /* ── Nav ── */
+  .nav-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 1.25rem;
+  }
+  .nav-btn {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border-strong);
+    background: var(--bg);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .nav-btn:hover { background: var(--bg-secondary); color: var(--text); }
+  .nav-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+  /* ── Section card ── */
+  .section-card {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: background 0.12s;
+    border-bottom: 0.5px solid transparent;
+    user-select: none;
+  }
+  .section-header:hover { background: var(--bg-secondary); }
+  .section-header.open { border-bottom-color: var(--border); }
+  .section-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .section-title {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .section-phase {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 10px;
+    background: var(--bg-tertiary);
+    color: var(--text-tertiary);
+    white-space: nowrap;
+  }
+  .section-meta {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    min-width: 40px;
+    text-align: right;
+  }
+  .chevron {
+    width: 16px;
+    height: 16px;
+    color: var(--text-tertiary);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .chevron.open { transform: rotate(90deg); }
+
+  /* ── Items ── */
+  .items-list {
+    display: none;
+    padding: 4px 0 10px;
+  }
+  .items-list.open { display: block; }
+
+  .sub-group { padding: 12px 18px 4px; }
+  .sub-group-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 2px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.1s;
+  }
+  .check-item:hover { background: var(--bg-secondary); padding-left: 6px; padding-right: 6px; margin: 0 -4px; }
+
+  .checkbox {
+    width: 16px;
+    height: 16px;
+    border: 0.5px solid var(--border-strong);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.12s;
+    background: var(--bg);
+    position: relative;
+  }
+  .checkbox.checked {
+    background: var(--text);
+    border-color: var(--text);
+  }
+  .checkbox.checked::after {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 5px;
+    border-left: 2px solid var(--bg);
+    border-bottom: 2px solid var(--bg);
+    transform: rotate(-45deg) translate(1px, -1px);
+  }
+
+  .item-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    flex: 1;
+    transition: color 0.12s;
+  }
+  .item-text.checked {
+    text-decoration: line-through;
+    opacity: 0.45;
+  }
+
+  .severity {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    margin-top: 3px;
+    letter-spacing: 0.03em;
+  }
+  .sev-critical { background: #FCEBEB; color: #A32D2D; }
+  .sev-high     { background: #FAEEDA; color: #854F0B; }
+  .sev-medium   { background: #E1F5EE; color: #0F6E56; }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 10px 18px;
+    border-top: 0.5px solid var(--border);
+    background: var(--bg-secondary);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-secondary); }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 2.5rem;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  /* ── Print ── */
+  @media print {
+    body { background: white; padding: 1rem; }
+    .nav-bar, .hero-actions, .export-btn, .reset-btn { display: none !important; }
+    .items-list { display: block !important; }
+    .section-card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="hero">
+    <div class="hero-tag">Healthcare Agentic AI · Full Development Lifecycle</div>
+    <h1>360° Safe AI Development Guidelines</h1>
+    <div class="hero-sub">End-to-end safety checklist from data to production &amp; beyond — click items to track progress</div>
+    <div class="hero-actions">
+      <button class="export-btn" onclick="window.print()">⬇ Print / Save as PDF</button>
+      <button class="reset-btn" onclick="resetAll()">Reset all</button>
+      <span style="font-size:12px; color:var(--text-tertiary); margin-left:4px;">Progress saves in this browser tab</span>
+    </div>
+  </div>
+
+  <div class="stats-row" id="stats-row"></div>
+
+  <div class="progress-wrap">
+    <span class="progress-label" id="prog-label">0 / 0 done</span>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+    <span class="progress-pct" id="prog-pct">0%</span>
+  </div>
+
+  <div class="nav-bar" id="nav-bar"></div>
+
+  <div id="sections-container"></div>
+
+  <div class="footer">
+    Healthcare AI Safety Framework <span id="gen-date"></span>
+  </div>
+</div>
+
+<script>
+document.getElementById('gen-date').textContent = new Date().toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'});
+
+const PHASES = ["All","Data","Model","Evaluation","Infrastructure","Guardrails","Compliance","Production","Post-Production"];
+
+const SECTIONS = [
+  {
+    id:"data-governance", title:"Data Governance & Privacy", icon:"🗄", iconBg:"#E1F5EE", phase:"Data",
+    groups:[
+      { label:"PHI / PII identification & handling", items:[
+        {text:"Inventory all data sources; classify PHI/PII per HIPAA Safe Harbor and Expert Determination methods",sev:"critical"},
+        {text:"Apply de-identification / pseudonymization before any model training or fine-tuning pipeline",sev:"critical"},
+        {text:"Enforce field-level encryption for SSN, MRN, DOB, diagnosis codes at rest and in transit",sev:"critical"},
+        {text:"Implement data minimization — collect only the minimum necessary for the clinical task",sev:"high"},
+        {text:"Audit re-identification risk after de-identification using k-anonymity / l-diversity metrics",sev:"high"},
+      ]},
+      { label:"Data access & lineage", items:[
+        {text:"Enforce role-based access control (RBAC) with least-privilege on all data stores",sev:"critical"},
+        {text:"Log every data access event with user, timestamp, and purpose (audit trail for HIPAA §164.312)",sev:"critical"},
+        {text:"Maintain end-to-end data lineage from source EHR → preprocessing → embedding → vector store",sev:"high"},
+        {text:"Implement data versioning with immutable snapshots for reproducibility",sev:"high"},
+        {text:"Define and enforce data retention and deletion SLAs including right-to-erasure workflows",sev:"medium"},
+      ]},
+      { label:"Data quality & representativeness", items:[
+        {text:"Validate demographic completeness; flag datasets with <5% representation of protected groups",sev:"critical"},
+        {text:"Profile label quality — inter-annotator agreement (Cohen's κ ≥ 0.7 for clinical labels)",sev:"high"},
+        {text:"Detect and document class imbalance; apply stratified sampling or reweighting strategies",sev:"high"},
+        {text:"Screen training corpus for toxic, biased, or erroneous clinical content before use",sev:"high"},
+        {text:"Establish data contracts with source systems to detect schema drift early",sev:"medium"},
+      ]},
+    ]
+  },
+  {
+    id:"bias-fairness", title:"Bias Detection & Fairness", icon:"⚖", iconBg:"#FAEEDA", phase:"Data",
+    groups:[
+      { label:"Pre-training bias assessment", items:[
+        {text:"Audit training data for historical bias: race, gender, age, insurance status in clinical outcomes",sev:"critical"},
+        {text:"Measure disparate impact ratio and statistical parity difference across protected attributes",sev:"critical"},
+        {text:"Document known data gaps (e.g., underrepresentation of rural patients, rare diseases)",sev:"high"},
+      ]},
+      { label:"Model fairness evaluation", items:[
+        {text:"Evaluate equalized odds, equal opportunity, and calibration parity across demographic slices",sev:"critical"},
+        {text:"Run subgroup performance analyses — report precision/recall separately per demographic cohort",sev:"critical"},
+        {text:"Conduct counterfactual fairness tests — vary only protected attributes, check output consistency",sev:"high"},
+        {text:"Test for proxy discrimination (e.g., zip code as proxy for race in risk scores)",sev:"high"},
+        {text:"Establish fairness thresholds and escalation triggers before deployment",sev:"high"},
+      ]},
+      { label:"Ongoing fairness monitoring", items:[
+        {text:"Monitor model performance disaggregated by demographics in production on a weekly cadence",sev:"high"},
+        {text:"Implement automated fairness dashboards with alerts when disparity exceeds thresholds",sev:"medium"},
+        {text:"Conduct quarterly bias audits with an independent clinical ethics review board",sev:"medium"},
+      ]},
+    ]
+  },
+  {
+    id:"model-safety", title:"Model Development & Safety", icon:"🧠", iconBg:"#E6F1FB", phase:"Model",
+    groups:[
+      { label:"Training safety", items:[
+        {text:"Use RLHF or Constitutional AI alignment techniques for instruction-following models",sev:"high"},
+        {text:"Incorporate clinical domain experts in preference labeling for RLHF reward models",sev:"high"},
+        {text:"Apply differential privacy (ε ≤ 1.0) during fine-tuning when training on patient data",sev:"critical"},
+        {text:"Track and limit memorization — red-team with membership inference attacks post-training",sev:"critical"},
+        {text:"Version all model checkpoints with immutable hashes; maintain full provenance chain",sev:"high"},
+      ]},
+      { label:"RAG architecture safety", items:[
+        {text:"Scope retrieval namespace by patient context — prevent cross-patient document bleed",sev:"critical"},
+        {text:"Enforce access-control-aware retrieval: retriever honors RBAC before returning chunks",sev:"critical"},
+        {text:"Validate retrieved chunk provenance; reject chunks from unverified or stale sources",sev:"high"},
+        {text:"Implement faithfulness guardrail — penalize responses not grounded in retrieved context",sev:"high"},
+        {text:"Set maximum retrieval context window limits to prevent token stuffing / prompt injection via documents",sev:"high"},
+      ]},
+      { label:"Agentic AI safety", items:[
+        {text:"Define explicit tool-use permissions per agent role — no agent has universal tool access",sev:"critical"},
+        {text:"Implement human-in-the-loop checkpoints for high-stakes actions: prescriptions, care orders, alerts",sev:"critical"},
+        {text:"Set maximum action chain depth and cost budgets to prevent runaway agent loops",sev:"critical"},
+        {text:"Log every agent action with full context, tool call parameters, and outcomes for audit",sev:"critical"},
+        {text:"Sandbox external tool integrations — agents cannot directly write to EHR without approval gateway",sev:"critical"},
+        {text:"Test multi-agent coordination for emergent unsafe behaviors via adversarial simulation",sev:"high"},
+      ]},
+    ]
+  },
+  {
+    id:"evaluation", title:"Evaluation & Testing", icon:"📊", iconBg:"#EAF3DE", phase:"Evaluation",
+    groups:[
+      { label:"NLG generation quality metrics", items:[
+        {text:"Compute ROUGE-1, ROUGE-2, and ROUGE-L for summarization tasks (discharge notes, prior auth) against human-written gold references; set minimum ROUGE-L threshold per use case",sev:"critical"},
+        {text:"Apply BERTScore (P/R/F1) using a clinical domain model (BioBERT or ClinicalBERT) for semantically-aware generation quality beyond n-gram overlap",sev:"critical"},
+        {text:"Use BLEU-4 for tasks requiring strict lexical fidelity (structured medication instructions); document its known limitations on open-ended clinical text",sev:"high"},
+        {text:"Track BARTScore for generation faithfulness — measures log-likelihood of the output conditioned on the source document",sev:"high"},
+        {text:"Evaluate METEOR score to capture synonym-aware and stem-aware generation quality for clinical paraphrase tasks",sev:"medium"},
+        {text:"Measure perplexity on held-out clinical domain text as a regression signal across model versions",sev:"medium"},
+      ]},
+      { label:"Classification & extraction metrics", items:[
+        {text:"Report macro and micro F1-score for all classification tasks (ICD coding, triage, intent detection) — never rely solely on accuracy with imbalanced clinical classes",sev:"critical"},
+        {text:"Track precision and recall separately per class — in clinical contexts recall is often more critical than precision (missed diagnoses are costlier than false positives)",sev:"critical"},
+        {text:"Compute AUROC and AUPRC for binary risk prediction; prefer AUPRC for imbalanced clinical datasets where positive cases are rare",sev:"critical"},
+        {text:"Evaluate NER using entity-level F1 (strict and lenient match) for clinical entity extraction covering medications, conditions, procedures, and dosages",sev:"high"},
+        {text:"Measure Matthews Correlation Coefficient (MCC) for binary classification tasks — robust to severe class imbalance common in clinical datasets",sev:"high"},
+        {text:"Report full confusion matrix with per-class breakdown — essential for spotting systematic misclassification patterns across demographic subgroups",sev:"high"},
+        {text:"For multi-label tasks (co-morbidity prediction, multi-code ICD assignment), compute Hamming loss and subset accuracy alongside per-label F1",sev:"medium"},
+      ]},
+      { label:"RAG pipeline evaluation", items:[
+        {text:"Measure Recall@K (K=1,3,5,10) on a labeled clinical QA retrieval benchmark — fraction of relevant documents in top-K retrieved chunks; target Recall@5 >= 0.85",sev:"critical"},
+        {text:"Compute Mean Reciprocal Rank (MRR) to evaluate rank of first relevant document — critical for single-answer clinical lookup tasks such as drug interaction queries",sev:"critical"},
+        {text:"Track NDCG@K (Normalized Discounted Cumulative Gain) for ranked retrieval where higher-ranked relevant chunks should score proportionally higher",sev:"high"},
+        {text:"Run RAGAS Faithfulness: verify every claim in the generated answer is entailed by retrieved context — target score >= 0.85 for all clinical use cases before deployment",sev:"critical"},
+        {text:"Run RAGAS Answer Relevance: measure semantic alignment between generated answer and the original question — flag scores below 0.80 for review",sev:"critical"},
+        {text:"Run RAGAS Context Precision: assess what fraction of retrieved chunks are actually relevant — low precision wastes context window and introduces noise into clinical reasoning",sev:"high"},
+        {text:"Run RAGAS Context Recall: measure coverage of ground-truth answer information by retrieved chunks — low recall means retriever is missing key clinical evidence",sev:"high"},
+        {text:"Evaluate RAGAS Answer Correctness combining factual and semantic similarity vs. clinician-verified ground truth — use as primary RAG quality gate in CI/CD",sev:"critical"},
+        {text:"Evaluate RAGAS Context Entity Recall: verify clinical entities (drug names, diagnoses, dosages) mentioned in the ground truth are present in retrieved context",sev:"high"},
+        {text:"Test chunk-level citation attribution accuracy: verify model correctly cites source document and section for clinical claims — measure citation precision and recall",sev:"high"},
+        {text:"Run negative retrieval tests: verify system returns low similarity scores and declines to answer when no relevant document exists in the knowledge base",sev:"high"},
+        {text:"Evaluate embedding model quality on clinical domain using MTEB clinical subsets or custom domain benchmarks before selecting or upgrading the embedding model",sev:"high"},
+        {text:"Benchmark chunking strategy variants (fixed-size, semantic, late chunking) on retrieval quality metrics — document the winning configuration and rationale",sev:"medium"},
+      ]},
+      { label:"Agentic AI evaluation", items:[
+        {text:"Measure Task Completion Rate (TCR): percentage of multi-step clinical tasks (prior auth workflow, care plan generation) completed successfully end-to-end without human intervention",sev:"critical"},
+        {text:"Track Goal Completion Rate (GCR): evaluate whether the agent achieved the clinician's stated goal — use human rater evaluation for complex goals where tool completion alone is insufficient",sev:"critical"},
+        {text:"Evaluate Tool Selection Accuracy: for each trajectory step, verify the agent selected the correct tool — compute precision and recall over tool choices vs. expert-annotated optimal trajectory",sev:"critical"},
+        {text:"Measure Tool Call Correctness: validate tool input parameters are correctly formatted, clinically appropriate, and within allowed scope — target 0 incorrect parameter calls in production",sev:"critical"},
+        {text:"Track Trajectory Efficiency Ratio: average actual steps / optimal steps to complete a task — ratio > 1.5 triggers investigation of planning prompt or tool description quality",sev:"high"},
+        {text:"Evaluate Hallucinated Tool Calls: measure rate of invoking non-existent tools or fabricating API parameters — must be 0% in clinical production environments",sev:"critical"},
+        {text:"Assess Plan Coherence using LLM-as-judge or clinician raters: evaluate whether the agent's reasoning chain is logically consistent and clinically sound at each decision step",sev:"high"},
+        {text:"Measure Unnecessary Action Rate: fraction of tool calls that are redundant or do not contribute to task completion — signals over-planning or tool description ambiguity",sev:"high"},
+        {text:"Test Error Recovery Rate: after injecting deliberate tool failures or incorrect outputs mid-trajectory, measure how often the agent correctly detects failure and recovers gracefully",sev:"critical"},
+        {text:"Evaluate Human Escalation Precision and Recall: verify escalations are warranted — minimize both unnecessary escalations (clinician burden) and missed escalations (patient risk)",sev:"critical"},
+        {text:"Run multi-agent coordination tests: evaluate information handoff fidelity, task decomposition correctness, and absence of contradictory outputs between sub-agents",sev:"high"},
+        {text:"Conduct adversarial planning tests: inject contradictory tool outputs mid-trajectory; verify agent detects inconsistency and does not blindly proceed to irreversible actions",sev:"critical"},
+        {text:"Benchmark agent on established frameworks: AgentBench, ToolBench, GAIA, or custom clinical workflow trajectory datasets — track scores across model versions",sev:"medium"},
+        {text:"Implement tool tracing: capture and visualize full agent execution traces (thought → tool call → observation → next thought) for every evaluation episode to enable systematic failure analysis",sev:"high"},
+      ]},
+      { label:"Human evaluation protocols", items:[
+        {text:"Conduct structured blind clinical expert evaluation: recruit minimum 3 independent clinicians per use case; score outputs on accuracy, completeness, safety, and tone using validated rubric",sev:"critical"},
+        {text:"Use Likert-scale rubric (1–5) for factual correctness, clinical appropriateness, helpfulness, and absence of harm — report Fleiss kappa inter-rater reliability; target κ >= 0.6",sev:"critical"},
+        {text:"Run preference evaluation (A/B): present clinician raters with paired outputs from new vs. baseline model — compute win rate, tie rate, and loss rate with statistical significance testing",sev:"high"},
+        {text:"Conduct adversarial human evaluation: task red-team clinicians to elicit unsafe, incorrect, or inappropriate clinical outputs — document all findings in structured failure report",sev:"critical"},
+        {text:"Evaluate output explainability: ask clinicians to rate whether the reasoning provided is sufficient to act on — track the 'would you use without verification' rate as a safety KPI",sev:"high"},
+        {text:"Perform task-based user studies: time clinicians completing representative tasks with and without AI assistance — measure time savings, error rate reduction, and cognitive load (NASA-TLX scale)",sev:"medium"},
+        {text:"Collect free-text qualitative feedback from clinical evaluators — apply thematic analysis to surface systematic failure modes not captured by quantitative metrics",sev:"high"},
+      ]},
+      { label:"Explainability & interpretability (XAI)", items:[
+        {text:"Apply SHAP (SHapley Additive exPlanations) to all structured-input clinical ML models (risk scores, triage classifiers) — generate per-feature contribution values for every prediction and surface top drivers to clinicians",sev:"critical"},
+        {text:"Use LIME (Local Interpretable Model-agnostic Explanations) to produce local approximations for individual clinical predictions where SHAP is computationally infeasible — validate fidelity of the local surrogate model",sev:"high"},
+        {text:"Apply Integrated Gradients or GradCAM for transformer-based models to identify which input tokens (symptoms, medications, lab values) most influenced a clinical output",sev:"high"},
+        {text:"Generate attention weight visualizations for encoder-based models (BERT-family) to support clinician understanding — document known limitations of attention as a sole proxy for importance",sev:"medium"},
+        {text:"Implement counterfactual explanations: for any clinical risk prediction, show the minimum feature change that would flip the prediction (e.g., 'If HbA1c drops below 7.2, risk classification changes from High to Moderate')",sev:"high"},
+        {text:"Produce global feature importance reports (SHAP summary plots, partial dependence plots) for each deployed model — review with clinical SMEs quarterly to confirm medically plausible feature drivers",sev:"high"},
+        {text:"For RAG and LLM outputs, implement attribution highlighting: visually indicate which retrieved source sentences or document sections grounded each claim in the generated response",sev:"critical"},
+        {text:"For agentic workflows, generate step-level decision traces: annotate each agent action with the evidence, retrieved context, or tool output that triggered it — make this accessible to clinician reviewers",sev:"critical"},
+        {text:"Validate explanation stability: run the same input multiple times and verify that SHAP/LIME explanations are consistent — high variance in explanations signals model instability",sev:"high"},
+        {text:"Evaluate explanation fidelity: measure how well the surrogate explanation model (LIME/SHAP) approximates the base model's behavior locally — flag fidelity below 0.85 for review",sev:"high"},
+        {text:"Conduct clinician comprehension studies: present SHAP waterfall charts or LIME feature highlights to clinicians and measure whether explanations improve decision confidence and reduce errors",sev:"medium"},
+        {text:"Ensure XAI outputs themselves are PHI-safe: SHAP feature values and LIME explanations may expose patient-specific data — apply the same PHI masking rules as to model outputs",sev:"critical"},
+        {text:"Document explainability method selection rationale per use case in the model card — justify why the chosen method (SHAP vs LIME vs attention vs counterfactual) is appropriate for that clinical context",sev:"medium"},
+      ]},
+      { label:"Safety-specific evaluations", items:[
+        {text:"Red-team for adversarial prompts: jailbreaks, prompt injection via clinical documents, role-playing harmful scenarios, and multi-turn manipulation attacks against each clinical use case",sev:"critical"},
+        {text:"Evaluate refusal accuracy on a curated out-of-scope query set — model must decline with F1 >= 0.95 on refusal classification; false refusals on valid queries are also tracked",sev:"critical"},
+        {text:"Measure Expected Calibration Error (ECE) — verify model's stated confidence correlates with actual clinical accuracy; recalibrate if ECE > 0.05",sev:"high"},
+        {text:"Measure PHI leakage rate in generated outputs using Presidio + custom clinical NER — target zero PHI items per 1,000 outputs; any leak is a P0 incident",sev:"critical"},
+        {text:"Conduct FMEA (Failure Mode and Effects Analysis) per clinical use case — document failure modes, likelihood, severity, detectability, and mitigation actions",sev:"high"},
+        {text:"Evaluate behavior under distribution shift: test on patient populations, care settings, and clinical specialties not well represented in training data",sev:"high"},
+      ]},
+      { label:"Regression, CI & benchmark testing", items:[
+        {text:"Maintain a versioned golden evaluation dataset of 500+ labeled clinical scenarios covering all deployed use cases — update quarterly with new edge cases from production failures",sev:"critical"},
+        {text:"Enforce automated eval gates in CI/CD: block any deployment where ROUGE-L, BERTScore, or RAGAS Faithfulness drops more than 3% from the current production baseline",sev:"critical"},
+        {text:"Run nightly regression tests across all metric categories — generate automated pass/fail report with metric delta vs. baseline for every model checkpoint",sev:"high"},
+        {text:"Benchmark against public clinical NLP datasets: MedQA (USMLE), PubMedQA, MedMCQA, i2b2 NLP Challenge — enables cross-version and cross-organization comparability",sev:"medium"},
+        {text:"Implement evaluation canary: shadow-run new model on 5% of live traffic, compare all metrics to production model before promoting to full traffic",sev:"high"},
+        {text:"Automate end-to-end RAGAS evaluation suite on every PR touching retrieval, chunking, embedding, or prompt configuration — fail PR if any RAGAS metric drops below threshold",sev:"high"},
+        {text:"Track evaluation metric variance across multiple runs (non-zero temperature): report mean ± std dev to ensure reproducible performance before deployment",sev:"medium"},
+        {text:"Log all evaluation runs with model version, dataset version, hyperparameters, and full metric report to an immutable experiment tracking store (MLflow / Weights & Biases)",sev:"high"},
+      ]},
+    ]
+  },
+  {
+    id:"guardrails", title:"Guardrails & Controls", icon:"🛡", iconBg:"#FAECE7", phase:"Guardrails",
+    groups:[
+      { label:"Input guardrails", items:[
+        {text:"Deploy prompt injection detection layer — intercept and neutralize indirect injection in documents",sev:"critical"},
+        {text:"Implement topic scope filter — reject queries outside the defined clinical use case boundary",sev:"critical"},
+        {text:"Validate and sanitize all user inputs; enforce maximum token limits per query",sev:"high"},
+        {text:"Screen for self-harm, crisis, or emergency signals — route to human escalation immediately",sev:"critical"},
+      ]},
+      { label:"Output guardrails", items:[
+        {text:"Run PHI/PII detection on every generated output before delivery (zero PHI leakage policy)",sev:"critical"},
+        {text:"Apply toxicity and harmful content classifier — block outputs exceeding threshold scores",sev:"critical"},
+        {text:"Enforce mandatory uncertainty disclosure: model must state confidence level on clinical assertions",sev:"high"},
+        {text:"Append mandatory disclaimer on all clinical outputs: 'Not a substitute for professional judgment'",sev:"critical"},
+        {text:"Block drug dosage recommendations outside approved evidence base or formulary",sev:"critical"},
+        {text:"Detect and refuse responses that mimic specific physician advice without clinical context",sev:"high"},
+      ]},
+      { label:"Agentic action guardrails", items:[
+        {text:"Require dual authorization for irreversible actions (e.g., canceling a medication order)",sev:"critical"},
+        {text:"Implement action sandbox — test all tool calls in staging before live execution",sev:"high"},
+        {text:"Set rate limits on agent-initiated API calls to prevent runaway automation",sev:"high"},
+        {text:"Implement circuit breaker — auto-halt agents on anomalous action patterns",sev:"critical"},
+      ]},
+    ]
+  },
+  {
+    id:"security", title:"Security & Infrastructure", icon:"🔐", iconBg:"#EEEDFE", phase:"Infrastructure",
+    groups:[
+      { label:"Data & model security", items:[
+        {text:"Encrypt all model weights, embeddings, and vector stores at rest (AES-256) and in transit (TLS 1.3)",sev:"critical"},
+        {text:"Store API keys and credentials exclusively in secrets managers (AWS Secrets Manager / HashiCorp Vault)",sev:"critical"},
+        {text:"Implement model artifact signing — verify integrity of deployed model checkpoints",sev:"critical"},
+        {text:"Restrict vector database access to service accounts only; no direct developer access in production",sev:"high"},
+      ]},
+      { label:"Network & runtime security", items:[
+        {text:"Deploy AI inference endpoints within HIPAA-compliant VPC; no public internet exposure",sev:"critical"},
+        {text:"Implement WAF rules specific to LLM attack patterns (prompt injection, token flooding)",sev:"critical"},
+        {text:"Enable mTLS for all service-to-service communication in agentic pipelines",sev:"high"},
+        {text:"Conduct quarterly penetration testing with LLM-specific attack scenarios",sev:"high"},
+        {text:"Implement runtime anomaly detection on inference patterns — flag unusual query volumes or content",sev:"high"},
+      ]},
+      { label:"Supply chain security", items:[
+        {text:"Verify provenance of all base models and third-party embeddings before use",sev:"critical"},
+        {text:"Scan open-source model weights for trojans and backdoors using activation analysis",sev:"high"},
+        {text:"Maintain SBOM (Software Bill of Materials) for all AI components and dependencies",sev:"high"},
+        {text:"Lock dependency versions; enforce reproducible builds for all inference containers",sev:"medium"},
+      ]},
+    ]
+  },
+  {
+    id:"compliance", title:"Regulatory Compliance", icon:"📋", iconBg:"#FBEAF0", phase:"Compliance",
+    groups:[
+      { label:"HIPAA / healthcare regulations", items:[
+        {text:"Complete and maintain BAA (Business Associate Agreement) with all AI vendors and cloud providers",sev:"critical"},
+        {text:"Document HIPAA Security Rule §164.312 safeguards for each AI system component",sev:"critical"},
+        {text:"Implement breach notification workflow — detect and report PHI exposure within 60 days",sev:"critical"},
+        {text:"Maintain minimum necessary standard documentation for all PHI accessed by the AI",sev:"high"},
+      ]},
+      { label:"FDA & clinical AI regulations", items:[
+        {text:"Classify AI system under FDA Software as a Medical Device (SaMD) framework if clinical decision support",sev:"critical"},
+        {text:"Maintain 21 CFR Part 11-compliant audit trails for all AI-assisted clinical decisions",sev:"critical"},
+        {text:"Document intended use, indications for use, and contraindications in a clinical AI card",sev:"high"},
+        {text:"Establish post-market surveillance plan per FDA AI/ML-based SaMD Action Plan",sev:"high"},
+      ]},
+      { label:"AI governance & ethics", items:[
+        {text:"Publish an AI model card documenting training data, known limitations, and performance by subgroup",sev:"high"},
+        {text:"Establish an AI ethics review board including clinicians, patients, and ethicists",sev:"high"},
+        {text:"Implement explainability requirements — high-stakes clinical decisions must provide SHAP/LIME feature attribution or source-grounded rationale to clinicians before action is taken",sev:"critical"},
+        {text:"Conduct annual algorithmic impact assessment for each deployed clinical AI system",sev:"high"},
+        {text:"Comply with applicable state-level AI laws (Colorado AI Act, Illinois BIPA, etc.)",sev:"medium"},
+      ]},
+    ]
+  },
+  {
+    id:"observability", title:"Observability & Monitoring", icon:"📡", iconBg:"#E6F1FB", phase:"Production",
+    groups:[
+      { label:"Structured logging", items:[
+        {text:"Log every inference request with a unique trace ID, timestamp (UTC), user role, session ID, and environment tag (prod/staging)",sev:"critical"},
+        {text:"Capture full prompt payload (system prompt + user turn + injected context) in append-only encrypted log store",sev:"critical"},
+        {text:"Log raw model output, post-guardrail output, and any redacted fields separately for forensic comparison",sev:"critical"},
+        {text:"Record token usage per request (prompt tokens, completion tokens, total) for cost attribution and quota enforcement",sev:"high"},
+        {text:"Log RAG retrieval context: document IDs, chunk indices, similarity scores, and retrieval latency per query",sev:"high"},
+        {text:"Capture agent tool calls in structured format: tool name, input parameters, output, execution time, success/failure",sev:"critical"},
+        {text:"Log guardrail decisions: which rule triggered, input snippet (non-PHI), action taken (blocked/redacted/passed)",sev:"high"},
+        {text:"Maintain HIPAA-compliant audit log retention — minimum 6 years, immutable, tamper-evident (WORM storage)",sev:"critical"},
+        {text:"Implement log correlation across microservices using distributed tracing (OpenTelemetry spans) for end-to-end request tracing",sev:"high"},
+        {text:"Mask or tokenize PHI fields before writing to any log sink — never log raw patient identifiers",sev:"critical"},
+      ]},
+      { label:"Latency & throughput monitoring", items:[
+        {text:"Instrument and track P50, P95, P99, and P99.9 end-to-end inference latency — alert if P95 exceeds SLO threshold",sev:"high"},
+        {text:"Measure and separately track: retrieval latency, LLM time-to-first-token (TTFT), generation latency, and post-processing latency",sev:"high"},
+        {text:"Monitor requests per second (RPS) and concurrent session counts; alert on sustained >80% capacity utilization",sev:"high"},
+        {text:"Track queue depth and wait time for async inference jobs — alert if queue exceeds SLA-defined depth",sev:"high"},
+        {text:"Set and enforce SLOs: define acceptable latency budgets per use case (e.g., clinical summarization ≤ 4s P95)",sev:"high"},
+        {text:"Monitor token throughput (tokens/sec) to detect GPU/CPU saturation and model serving bottlenecks",sev:"medium"},
+        {text:"Implement error budget tracking — calculate burn rate and trigger freeze on deployments when budget is exhausted",sev:"medium"},
+      ]},
+      { label:"Prompt analytics & quality", items:[
+        {text:"Aggregate and cluster prompt patterns to detect emerging use case drift, scope violations, or misuse trends",sev:"high"},
+        {text:"Track prompt length distribution over time — sudden shifts may indicate prompt injection or template tampering",sev:"high"},
+        {text:"Monitor system prompt override attempts — alert on any user turn that contains system-role-like instructions",sev:"critical"},
+        {text:"Analyze top-N most frequent prompt templates weekly; review for clinical accuracy and scope alignment",sev:"medium"},
+        {text:"Track refusal rate by prompt category — high refusal rates may indicate misconfigured guardrails or user friction",sev:"high"},
+        {text:"Measure prompt-to-response semantic similarity to detect template drift or unexpected output style changes",sev:"medium"},
+        {text:"Log and review few-shot examples in dynamic prompts — validate they remain clinically accurate after knowledge base updates",sev:"high"},
+        {text:"Detect and alert on unusually long prompt inputs (> configured max) which may signal prompt stuffing attacks",sev:"high"},
+      ]},
+      { label:"Data drift detection", items:[
+        {text:"Compute Population Stability Index (PSI) on input feature distributions weekly — alert if PSI > 0.2 (significant shift)",sev:"critical"},
+        {text:"Monitor input text statistics: average token length, vocabulary size, OOV token rate, language distribution",sev:"high"},
+        {text:"Track clinical entity distribution in inputs (diagnoses, medications, procedures) — flag unusual spikes or absences",sev:"high"},
+        {text:"Monitor source data freshness: detect stale EHR feeds, delayed lab results, or broken upstream data pipelines",sev:"critical"},
+        {text:"Implement schema drift detection on structured inputs (HL7/FHIR messages) — alert on missing or new fields",sev:"high"},
+        {text:"Track vector store corpus composition over time — monitor document count, average embedding age, and coverage gaps",sev:"high"},
+        {text:"Alert on sudden vocabulary shift: new ICD codes, drug names, or clinical terminology not present in training data",sev:"high"},
+        {text:"Run weekly Kolmogorov-Smirnov or Chi-squared tests on categorical input features against baseline distributions",sev:"medium"},
+      ]},
+      { label:"Model drift & concept drift detection", items:[
+        {text:"Evaluate model outputs against a static gold-set of 200+ labeled clinical QA pairs on a weekly automated schedule",sev:"critical"},
+        {text:"Track output quality metrics (ROUGE-L, BERTScore, faithfulness score) over time — alert on ≥5% degradation from baseline",sev:"critical"},
+        {text:"Monitor embedding space drift: compute mean cosine distance of production query embeddings from training centroid weekly",sev:"high"},
+        {text:"Detect concept drift via shadow scoring: run new production inputs through prior model version; flag divergence above threshold",sev:"high"},
+        {text:"Track calibration drift — monitor confidence score distributions; recalibrate if ECE (Expected Calibration Error) exceeds 0.05",sev:"high"},
+        {text:"Monitor hallucination rate trends over time with automated NLI-based factual consistency scoring on sampled outputs",sev:"critical"},
+        {text:"Detect output length drift — significant shift in response length distribution may indicate prompt or model behavior change",sev:"medium"},
+        {text:"Schedule quarterly full re-evaluation on held-out clinical benchmark datasets and compare to deployment baseline",sev:"high"},
+        {text:"Implement automated model re-training or re-evaluation trigger when drift score exceeds defined threshold for 3 consecutive days",sev:"high"},
+      ]},
+      { label:"RAG & retrieval monitoring", items:[
+        {text:"Track retrieval recall@K and MRR (Mean Reciprocal Rank) on a labeled clinical QA retrieval benchmark continuously",sev:"high"},
+        {text:"Monitor average retrieval similarity scores over time — declining scores may indicate vector store staleness or index corruption",sev:"high"},
+        {text:"Alert when retrieved chunk age exceeds staleness threshold (e.g., clinical guidelines older than 12 months)",sev:"critical"},
+        {text:"Track no-retrieval rate (queries returning 0 relevant chunks above threshold) — high rate indicates retrieval misconfiguration",sev:"high"},
+        {text:"Monitor cross-namespace retrieval violations — alert if chunks from unauthorized patient or tenant namespaces are returned",sev:"critical"},
+        {text:"Detect index coverage gaps: monitor ratio of queries answered from knowledge base vs. model parametric memory",sev:"medium"},
+      ]},
+      { label:"Safety & security monitoring", items:[
+        {text:"Alert on PHI detected in model outputs within 60 seconds — trigger auto-redaction, incident ticket, and downstream notification",sev:"critical"},
+        {text:"Monitor guardrail trigger rate by category (PHI, toxicity, scope, injection) — spike detection with rolling z-score alerts",sev:"critical"},
+        {text:"Track jailbreak attempt rate and pattern clusters — escalate to security team when novel attack patterns emerge",sev:"critical"},
+        {text:"Monitor for demographic bias drift weekly: track performance gap between demographic cohorts on sampled production outputs",sev:"high"},
+        {text:"Alert on bulk query patterns from a single user/session — may indicate data extraction or scraping attempt",sev:"high"},
+        {text:"Monitor agent action anomalies: unexpected tool combinations, high-frequency tool calls, or out-of-policy action sequences",sev:"critical"},
+        {text:"Track human escalation rate in agentic workflows — sudden drop may indicate guardrails are being bypassed",sev:"high"},
+      ]},
+      { label:"Dashboards & alerting", items:[
+        {text:"Maintain a real-time operational dashboard: RPS, latency percentiles, error rate, guardrail triggers, active sessions",sev:"high"},
+        {text:"Build a separate clinical quality dashboard: hallucination rate, faithfulness score, refusal rate, drift metrics, fairness indicators",sev:"high"},
+        {text:"Configure tiered alerting: P0 (PagerDuty/immediate), P1 (Slack + email within 15 min), P2 (daily digest)",sev:"critical"},
+        {text:"Implement anomaly detection on all key metrics using rolling mean ± 3σ or Prophet-based forecasting for seasonal patterns",sev:"high"},
+        {text:"Create per-use-case SLO dashboards visible to clinical stakeholders with weekly automated health report emails",sev:"medium"},
+        {text:"Retain 90 days of metric history with 1-minute granularity for incident investigations and trend analysis",sev:"high"},
+        {text:"Integrate observability stack with incident management platform (PagerDuty / OpsGenie) for automated escalation workflows",sev:"high"},
+      ]},
+    ]
+  },
+  {
+    id:"post-production", title:"Post-Production & Lifecycle", icon:"🔄", iconBg:"#EAF3DE", phase:"Post-Production",
+    groups:[
+      { label:"Continuous improvement", items:[
+        {text:"Implement structured clinician feedback loop — 5-star + free-text rating on every AI output",sev:"high"},
+        {text:"Triage negative feedback within 24h; route critical safety issues to immediate incident response",sev:"critical"},
+        {text:"Maintain rolling fine-tuning pipeline on curated clinician-validated corrections",sev:"high"},
+        {text:"Conduct monthly model update reviews: safety regression test required before every release",sev:"critical"},
+      ]},
+      { label:"Incident response", items:[
+        {text:"Define AI incident severity tiers (P0: patient harm risk, P1: PHI breach, P2: quality degradation)",sev:"critical"},
+        {text:"Maintain kill-switch capability — ability to disable any AI feature within 5 minutes",sev:"critical"},
+        {text:"Run tabletop simulations for AI incident scenarios quarterly",sev:"high"},
+        {text:"Document and publish post-mortems for all P0/P1 incidents with corrective actions",sev:"high"},
+      ]},
+      { label:"Model sunset & replacement", items:[
+        {text:"Define model end-of-life criteria: performance below clinical safety threshold triggers deprecation",sev:"high"},
+        {text:"Implement blue-green deployment with traffic shadowing before full rollout of new models",sev:"high"},
+        {text:"Archive model artifacts with full evaluation reports for regulatory traceability",sev:"high"},
+        {text:"Notify clinical stakeholders 30 days before any model change affecting their workflow",sev:"medium"},
+      ]},
+    ]
+  },
+];
+
+const state = { checked: new Set(), activePhase: "All" };
+
+function itemKey(sectionId, gi, ii) { return `${sectionId}-${gi}-${ii}`; }
+function totalItems() { return SECTIONS.flatMap(s => s.groups.flatMap(g => g.items)).length; }
+
+function toggleItem(key, sectionId) {
+  state.checked.has(key) ? state.checked.delete(key) : state.checked.add(key);
+  // Surgical DOM update — do NOT re-render sections (that closes drawers)
+  const box = document.getElementById('cb-' + key);
+  const txt = document.getElementById('ct-' + key);
+  if (box) box.classList.toggle('checked', state.checked.has(key));
+  if (txt) txt.classList.toggle('checked', state.checked.has(key));
+  // Update section counter
+  if (sectionId) {
+    const section = SECTIONS.find(s => s.id === sectionId);
+    if (section) {
+      const allKeys = section.groups.flatMap((g, gi) => g.items.map((_, ii) => itemKey(sectionId, gi, ii)));
+      const doneCount = allKeys.filter(k => state.checked.has(k)).length;
+      const metaEl = document.getElementById('meta-' + sectionId);
+      if (metaEl) metaEl.textContent = `${doneCount}/${allKeys.length}`;
+    }
+  }
+  renderStats();
+  renderProgress();
+}
+function resetAll() { if (confirm('Reset all checkboxes?')) { state.checked.clear(); renderAll(); } }
+function setPhase(p) { state.activePhase = p; renderAll(); }
+
+function renderAll() {
+  renderStats();
+  renderNav();
+  renderProgress();
+  renderSections();
+}
+
+function renderStats() {
+  const total = totalItems();
+  const done = state.checked.size;
+  const critical = SECTIONS.flatMap(s => s.groups.flatMap(g => g.items.filter(i => i.sev === 'critical'))).length;
+  const critDone = SECTIONS.flatMap(s => s.groups.flatMap((g, gi) =>
+    g.items.map((item, ii) => ({ item, key: itemKey(s.id, gi, ii) }))
+  )).filter(({item, key}) => item.sev === 'critical' && state.checked.has(key)).length;
+  document.getElementById('stats-row').innerHTML = [
+    ['Total checks', total],
+    ['Completed', done],
+    ['Critical items', critical],
+    ['Critical done', critDone],
+  ].map(([label, val]) => `
+    <div class="stat-card">
+      <div class="stat-label">${label}</div>
+      <div class="stat-value">${val}</div>
+    </div>`).join('');
+}
+
+function renderNav() {
+  document.getElementById('nav-bar').innerHTML = PHASES.map(p =>
+    `<button class="nav-btn${state.activePhase === p ? ' active' : ''}" onclick="setPhase('${p}')">${p}</button>`
+  ).join('');
+}
+
+function renderProgress() {
+  const total = totalItems(), done = state.checked.size;
+  const pct = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('prog-label').textContent = `${done} / ${total} done`;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+}
+
+function renderSections() {
+  const visible = state.activePhase === 'All' ? SECTIONS : SECTIONS.filter(s => s.phase === state.activePhase);
+  const autoOpen = state.activePhase !== 'All';
+  document.getElementById('sections-container').innerHTML = visible.map(section => {
+    const allItems = section.groups.flatMap((g, gi) => g.items.map((item, ii) => ({ item, key: itemKey(section.id, gi, ii) })));
+    const doneCount = allItems.filter(({key}) => state.checked.has(key)).length;
+    return `
+<div class="section-card">
+  <div class="section-header${autoOpen ? ' open' : ''}" onclick="toggleSection('${section.id}')">
+    <div class="section-icon" style="background:${section.iconBg}">${section.icon}</div>
+    <div class="section-title">${section.title}</div>
+    <span class="section-phase">${section.phase}</span>
+    <div class="section-meta" id="meta-${section.id}">${doneCount}/${allItems.length}</div>
+    <svg class="chevron${autoOpen ? ' open' : ''}" id="chev-${section.id}" viewBox="0 0 16 16" fill="none">
+      <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="items-list${autoOpen ? ' open' : ''}" id="lst-${section.id}">
+    ${section.groups.map((group, gi) => `
+      <div class="sub-group">
+        <div class="sub-group-label">${group.label}</div>
+        ${group.items.map((item, ii) => {
+          const key = itemKey(section.id, gi, ii);
+          const checked = state.checked.has(key);
+          const sevClass = item.sev === 'critical' ? 'sev-critical' : item.sev === 'high' ? 'sev-high' : 'sev-medium';
+          return `<div class="check-item" onclick="toggleItem('${key}','${section.id}')">
+            <div class="checkbox${checked ? ' checked' : ''}" id="cb-${key}"></div>
+            <div class="item-text${checked ? ' checked' : ''}" id="ct-${key}">${item.text}</div>
+            <span class="severity ${sevClass}">${item.sev}</span>
+          </div>`;
+        }).join('')}
+      </div>`).join('')}
+    <div class="legend">
+      <div class="legend-item"><span class="severity sev-critical">critical</span> Patient safety / regulatory risk</div>
+      <div class="legend-item"><span class="severity sev-high">high</span> Significant risk if missed</div>
+      <div class="legend-item"><span class="severity sev-medium">medium</span> Best practice</div>
+    </div>
+  </div>
+</div>`;
+  }).join('');
+}
+
+function toggleSection(id) {
+  const lst = document.getElementById('lst-' + id);
+  const hdr = lst.previousElementSibling;
+  const chev = document.getElementById('chev-' + id);
+  const open = lst.classList.toggle('open');
+  hdr.classList.toggle('open', open);
+  chev.classList.toggle('open', open);
+}
+
+renderAll();
+</script>
+</body>
+</html>
